@@ -3,23 +3,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_nearby">
 
     <fragment
-        android:id="@+id/navigation_home"
-        android:name="com.bigdipper.android.polaris.ui.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/navigation_nearby"
+        android:name="com.bigdipper.android.polaris.ui.nearby.NearbyFragment"
+        android:label="주변"
+        tools:layout="@layout/fragment_nearby" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.bigdipper.android.polaris.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_recent"
+        android:name="com.bigdipper.android.polaris.ui.recent.RecentFragment"
+        android:label="최근"
+        tools:layout="@layout/fragment_recent" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.bigdipper.android.polaris.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_favorite"
+        android:name="com.bigdipper.android.polaris.ui.favorite.FavoriteFragment"
+        android:label="즐겨찾기"
+        tools:layout="@layout/fragment_favorite" />
+
+    <fragment
+        android:id="@+id/navigation_mypage"
+        android:name="com.bigdipper.android.polaris.ui.mypage.MyPageFragment"
+        android:label="마이페이지"
+        tools:layout="@layout/fragment_mypage" />
+
 </navigation>

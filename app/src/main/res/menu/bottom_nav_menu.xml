@@ -2,18 +2,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_home"
-        android:icon="@drawable/ic_home_black_24dp"
-        android:title="@string/title_home" />
+        android:id="@+id/navigation_nearby"
+        android:icon="@drawable/navi_nearby"
+        android:title="주변" />
 
     <item
-        android:id="@+id/navigation_dashboard"
-        android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/title_dashboard" />
+        android:id="@+id/navigation_recent"
+        android:icon="@drawable/navi_recent"
+        android:title="최근" />
 
     <item
-        android:id="@+id/navigation_notifications"
-        android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="@string/title_notifications" />
+        android:id="@+id/navigation_favorite"
+        android:icon="@drawable/navi_favorite"
+        android:title="즐겨찾기" />
+
+    <item
+        android:id="@+id/navigation_mypage"
+        android:icon="@drawable/navi_mypage"
+        android:title="마이페이지" />
 
 </menu>
