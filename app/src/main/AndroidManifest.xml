@@ -11,6 +11,8 @@
         android:theme="@style/Theme.Polaris">
 
         <activity android:name=".MainActivity" />
+        <activity android:name=".ui.membership.LoginActivity" />
+        <activity android:name=".ui.membership.SignupActivity" />
 
         <activity
             android:name=".SplashActivity"
