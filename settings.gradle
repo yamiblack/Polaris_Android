@@ -1,0 +1,2 @@
+rootProject.name = "Polaris"
+include ':app'
