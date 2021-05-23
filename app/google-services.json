@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "980170690422",
+    "project_id": "polaris-8657e",
+    "storage_bucket": "polaris-8657e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:980170690422:android:8e7471b5bb3fc87f7a3457",
+        "android_client_info": {
+          "package_name": "com.bigdipper.android.polaris"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "980170690422-64eldo5fjbf87tcfjjk8dog8r30qtepb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJiTY3kjZxqxSqTmBV2VT85fSmqaBSSao"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "980170690422-64eldo5fjbf87tcfjjk8dog8r30qtepb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
