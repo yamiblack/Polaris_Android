@@ -20,68 +20,69 @@
 
     </FrameLayout>
 
-    <LinearLayout
+    <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="0dp"
+        android:paddingTop="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
-            android:id="@+id/linearLayout"
+            android:id="@+id/searchList"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_margin="5dp"
             android:background="@drawable/button_small_white_rounded"
-            android:orientation="horizontal"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp">
-
-            <Button
-                android:id="@+id/btn_nearby_back"
-                android:layout_width="14dp"
-                android:layout_height="14dp"
-                android:layout_gravity="center"
-                android:background="@drawable/btn_back"
-                android:visibility="gone" />
-
-            <EditText
-                android:id="@+id/et_search"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="3dp"
-                android:layout_marginLeft="3dp"
-                android:layout_marginEnd="3dp"
-                android:layout_marginRight="3dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:hint="Search"
-                android:inputType="text" />
-
-            <Button
-                android:id="@+id/btn_nearby_cancel"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center"
-                android:background="@android:drawable/ic_menu_close_clear_cancel"
-                android:visibility="gone" />
+            android:orientation="vertical">
 
         </LinearLayout>
+    </ScrollView>
 
-        <ScrollView
-            android:id="@+id/scrollView2"
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@drawable/button_small_white_rounded"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/btn_nearby_back"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_gravity="center"
+            android:background="@drawable/btn_back"
+            android:visibility="gone" />
+
+        <EditText
+            android:id="@+id/et_search"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="3dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginEnd="3dp"
+            android:layout_marginRight="3dp"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Search"
+            android:inputType="text" />
 
-            <LinearLayout
-                android:id="@+id/searchList"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="5dp"
-                android:background="@drawable/button_small_white_rounded"
-                android:orientation="vertical">
+        <Button
+            android:id="@+id/btn_nearby_cancel"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:background="@android:drawable/ic_menu_close_clear_cancel"
+            android:visibility="gone" />
 
-            </LinearLayout>
-        </ScrollView>
     </LinearLayout>
 
     <LinearLayout

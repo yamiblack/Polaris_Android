@@ -83,6 +83,7 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
                 searchText.setText("");
                 searchText.clearFocus();
                 cancelBtn.setVisibility(View.GONE);
+                directionBtn.setVisibility(View.VISIBLE);
             }
         });
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -94,6 +95,7 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
                 searchText.setText("");
                 backBtn.setVisibility(View.GONE);
                 cancelBtn.setVisibility(View.GONE);
+                directionBtn.setVisibility(View.VISIBLE);
                 InputMethodManager mInputMethodManager = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 mInputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
             }
@@ -101,7 +103,8 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
         directionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                tMapView.setLocationPoint(longitude, latitude);
+                tMapView.setCenterPoint(longitude, latitude);
             }
         });
 
@@ -131,6 +134,7 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
                     e.printStackTrace();
                 }
                 searchResultLayout.setVisibility(View.VISIBLE);
+                directionBtn.setVisibility(View.GONE);
             }
         });
 
@@ -305,6 +309,7 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
                 @Override
                 public void onClick(View v) {
                     searchResultLayout.setVisibility(View.GONE);
+                    directionBtn.setVisibility(View.VISIBLE);
                     tMapView.setLocationPoint(searchResult.get(id).getLongitude(), searchResult.get(id).getLatitude());
                     tMapView.setCenterPoint(searchResult.get(id).getLongitude(), searchResult.get(id).getLatitude());
                 }
