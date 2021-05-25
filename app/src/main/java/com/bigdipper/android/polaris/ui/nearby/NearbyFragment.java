@@ -7,23 +7,15 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-<<<<<<< Updated upstream
-import android.os.Build;
-import android.os.Bundle;
-=======
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
->>>>>>> Stashed changes
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-<<<<<<< Updated upstream
-=======
 import android.widget.Button;
->>>>>>> Stashed changes
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -37,14 +29,9 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bigdipper.android.polaris.R;
+import com.skt.Tmap.TMapData;
 import com.skt.Tmap.TMapGpsManager;
 import com.skt.Tmap.TMapPoint;
-<<<<<<< Updated upstream
-import com.skt.Tmap.TMapView;
-
-public class NearbyFragment extends Fragment implements TMapGpsManager.onLocationChangedCallback {
-
-=======
 import com.skt.Tmap.TMapPolyLine;
 import com.skt.Tmap.TMapView;
 
@@ -61,7 +48,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 public class NearbyFragment extends Fragment implements TMapGpsManager.onLocationChangedCallback {
 
->>>>>>> Stashed changes
     String API_Key = "l7xx57fa48d037ad47f6bfdadc9ff4b5e33c";
 
     FrameLayout tMap;
@@ -70,15 +56,12 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
     TMapPoint tMapPoint = null;
 
     double longitude, latitude;
-<<<<<<< Updated upstream
-=======
 
     //add for find path
     Document doc = null;
     TMapData tmapdata;
     boolean navFlag = false;
     TextView txtTest;
->>>>>>> Stashed changes
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -157,8 +140,6 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
         tMapView.setLocationPoint(location.getLongitude(), location.getLatitude());
         tMapView.setCenterPoint(location.getLongitude(), location.getLatitude());
     }
-<<<<<<< Updated upstream
-=======
 
 
     //add for find path
@@ -237,5 +218,4 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
         getPathThread.start();
         txtTest.setText(" ");
     }
->>>>>>> Stashed changes
 }
