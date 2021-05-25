@@ -10,6 +10,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+<<<<<<< Updated upstream
 import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,11 +36,20 @@ import com.skt.Tmap.TMapPoint;
 import com.skt.Tmap.TMapPolyLine;
 import com.skt.Tmap.TMapView;
 
+<<<<<<< Updated upstream
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+=======
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+>>>>>>> Stashed changes
 
 import java.net.URL;
 
@@ -57,16 +67,112 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
 
     double longitude, latitude;
 
+<<<<<<< Updated upstream
     //add for find path
     Document doc = null;
     TMapData tmapdata;
     boolean navFlag = false;
     TextView txtTest;
+=======
+    //addd for find path
+    boolean navFlag = false;
+    double destinationLatitude, destinationLongitude;
+
+
+    static double longitude, latitude;
+>>>>>>> Stashed changes
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_nearby, container, false);
 
+<<<<<<< Updated upstream
+=======
+        // View
+        searchText = root.findViewById(R.id.et_search);
+        cancelBtn = root.findViewById(R.id.btn_nearby_cancel);
+        backBtn = root.findViewById(R.id.btn_nearby_back);
+        directionBtn = root.findViewById(R.id.btn_direction);
+
+        // Dynamic View
+        searchResultLayout = (LinearLayout) root.findViewById(R.id.searchList);
+
+        //add for find path
+        tmapData = new TMapData();
+
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchText.setText("");
+                searchText.clearFocus();
+                cancelBtn.setVisibility(View.GONE);
+                directionBtn.setVisibility(View.VISIBLE);
+            }
+        });
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchResultLayout.removeAllViews();
+                searchResultLayout.setVisibility(View.GONE);
+                searchText.clearFocus();
+                searchText.setText("");
+                backBtn.setVisibility(View.GONE);
+                cancelBtn.setVisibility(View.GONE);
+                directionBtn.setVisibility(View.VISIBLE);
+                InputMethodManager mInputMethodManager = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                mInputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+            }
+        });
+        directionBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tMapView.setLocationPoint(longitude, latitude);
+                tMapView.setCenterPoint(longitude, latitude);
+            }
+        });
+
+        searchText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                searchResultLayout.removeAllViews();
+                cancelBtn.setVisibility(View.VISIBLE);
+                try {
+                    String searchKeyword = searchText.getText().toString();
+
+                    URL searchUrl = new URL("https://apis.openapi.sk.com/tmap/pois?appKey=" + API_Key + "&version=1&searchKeyword=" + searchKeyword + "&searchtypCd=R&radius=0&centerLon=" + longitude + "&centerLat=" + latitude);
+                    Runnable search = new SearchPOI(searchUrl);
+                    Thread searchThread = new Thread(search);
+                    searchThread.start();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                searchResultLayout.setVisibility(View.VISIBLE);
+                directionBtn.setVisibility(View.GONE);
+            }
+        });
+
+        searchText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus){
+                    backBtn.setVisibility(View.VISIBLE);
+                }else{
+
+                }
+            }
+        });
+
+>>>>>>> Stashed changes
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 //            requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 //            Toast.makeText(container.getContext(), "잠시만 기다려주세요.", Toast.LENGTH_SHORT).show();
@@ -173,6 +279,7 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
         thread.interrupt();
     }
 
+<<<<<<< Updated upstream
     //add for find fath
     private void getPathDataXML(){
         TMapPoint endPoint = new TMapPoint(36.0522751, 127.1354746);
@@ -209,6 +316,29 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
                             txtTest.setText("lat " + Double.toString(latitude) + " \nlong " + Double.toString(longitude) + "\n" +navInfo);
                         }
                     });
+=======
+    private void showSearchResult(ArrayList<POILocation> searchResult, int size){
+
+        for(int i = 0; i < size; i++){
+            LinearLayout searchElementLayout = new LinearLayout(getContext());
+            LinearLayout searchResultNameLayout = new LinearLayout(getContext());
+            LinearLayout searchResultAddressLayout = new LinearLayout(getContext());
+            searchElementLayout.setBackgroundDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_bottom_stroke));
+
+            searchElementLayout.setOrientation(LinearLayout.VERTICAL);
+            searchElementLayout.setId(i);
+            int id = i;
+            searchElementLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    searchResultLayout.setVisibility(View.GONE);
+                    directionBtn.setVisibility(View.VISIBLE);
+                    destinationLatitude = searchResult.get(id).getLatitude();
+                    destinationLongitude = searchResult.get(id).getLongitude();
+                    tMapView.setLocationPoint(destinationLongitude, destinationLatitude);
+                    tMapView.setCenterPoint(destinationLongitude, destinationLatitude);
+                    getPathDataXML();
+>>>>>>> Stashed changes
                 }
                 catch (Exception e){
                     e.printStackTrace();
@@ -218,4 +348,82 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
         getPathThread.start();
         txtTest.setText(" ");
     }
+<<<<<<< Updated upstream
+=======
+
+    private void drawPoly(){
+        TMapPoint startPoint = new TMapPoint(latitude, longitude); //현재 위치
+        TMapPoint endPoint = new TMapPoint(destinationLatitude, destinationLongitude); // (목적지)
+        Log.e("draw poly", "" + latitude +" " +  longitude);
+        Thread thread = new Thread(){
+            @Override
+            public void run() {
+                try {
+                    TMapPolyLine tMapPolyLine = new TMapData().findPathDataWithType(TMapData.TMapPathType.PEDESTRIAN_PATH, startPoint, endPoint);
+                    tMapPolyLine.setLineColor(Color.BLUE);
+                    tMapPolyLine.setLineWidth(2);
+                    tMapView.addTMapPolyLine("TestLine1", tMapPolyLine);
+                    //POI lat,lon info
+//                    Log.e("polyline", ""+tMapPolyLine.getLinePoint().toString());
+                }
+                catch (Exception e){
+                    e.printStackTrace();;
+                }
+                super.run();
+            }
+        };
+        thread.start();
+        try {
+            Thread.sleep(1000);
+        } catch(InterruptedException e) {
+            e.printStackTrace();
+        }
+        thread.interrupt();
+    }
+
+    //add for find fath
+    private void getPathDataXML(){
+        TMapPoint endPoint = new TMapPoint(destinationLatitude, destinationLongitude);
+        Thread getPathThread = new Thread(){
+            @Override
+            public void run(){
+                try {
+                    drawPoly();
+                    tmapData.findPathDataAllType(TMapData.TMapPathType.PEDESTRIAN_PATH, tMapView.getLocationPoint(), endPoint, new TMapData.FindPathDataAllListenerCallback() {
+                        @Override
+                        public void onFindPathDataAll(Document document) {
+                            Element root = document.getDocumentElement();
+
+                            NodeList nodeListPlacemark = root.getElementsByTagName("Placemark");
+                            StringBuilder navInfo = new StringBuilder("이동정보:\n");
+
+                            for( int i=0; i<nodeListPlacemark.getLength(); i++ ) {
+                                NodeList nodeListPlacemarkItem = nodeListPlacemark.item(i).getChildNodes();
+                                for( int j=0; j<nodeListPlacemarkItem.getLength(); j++ ) {
+                                    if( nodeListPlacemarkItem.item(j).getNodeName().equals("tmap:distance") ) {
+                                        Log.e("distance", nodeListPlacemarkItem.item(j).getTextContent().trim() +"미터");
+                                    }
+                                    if( nodeListPlacemarkItem.item(j).getNodeName().equals("tmap:turntype") ) {
+                                        Log.e("turntype", nodeListPlacemarkItem.item(j).getTextContent().trim() +"방향");
+                                    }
+//                        description
+                                    if( nodeListPlacemarkItem.item(j).getNodeName().equals("description") ) {
+                                        navInfo.append(nodeListPlacemarkItem.item(j).getTextContent().trim() + "\n");
+                                        Log.e("description", nodeListPlacemarkItem.item(j).getTextContent().trim() );
+                                    }
+                                }
+                            }
+                            Log.e("navInfo", "info: "+ navInfo);
+                        }
+                    });
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        };
+        getPathThread.start();
+    }
+
+>>>>>>> Stashed changes
 }
