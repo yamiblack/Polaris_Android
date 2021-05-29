@@ -11,31 +11,107 @@
         android:id="@+id/ll_tmap"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/gray"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
     </FrameLayout>
 
-    <ScrollView
-        android:id="@+id/scrollView2"
+    <LinearLayout
+        android:id="@+id/layout_search_selected"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:paddingTop="100dp"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/t_search_selected_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/colorPrimary"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/t_search_selected_bizname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/t_search_selected_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@android:color/black"
+                android:textSize="21sp" />
+
+            <Button
+                android:id="@+id/btn_selected_start_navi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="길 안내" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/sv_search_result"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/button_white_small_rounded"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
         <LinearLayout
             android:id="@+id/searchList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
-            android:background="@drawable/button_small_white_rounded"
             android:orientation="vertical">
 
+        </LinearLayout>
+    </ScrollView>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_show_path"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </ScrollView>
 
@@ -44,7 +120,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:background="@drawable/button_small_white_rounded"
+        android:background="@drawable/button_white_small_rounded"
         android:orientation="horizontal"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
@@ -90,10 +166,10 @@
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"
-        android:background="@drawable/button_small_white_rounded"
+        android:background="@drawable/button_white_small_rounded"
         android:orientation="horizontal"
         android:padding="5dp"
-        app:layout_constraintBottom_toBottomOf="@+id/ll_tmap"
+        app:layout_constraintBottom_toTopOf="@+id/layout_search_selected"
         app:layout_constraintEnd_toEndOf="parent">
 
         <Button
@@ -105,25 +181,32 @@
             android:padding="10dp" />
     </LinearLayout>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        app:layout_constraintBottom_toBottomOf="parent">
+    <LinearLayout
+        android:id="@+id/btn_zoom_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/button_white_small_rounded"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/layout_search_selected"
+        app:layout_constraintStart_toStartOf="parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+        <android.widget.Button
+            android:id="@+id/btn_zoom_in"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:background="@drawable/ic_bottom_stroke"
+            android:text="+" />
 
-            <TextView
-                android:id="@+id/showPath"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/black"
-                android:textColor="@color/white"
-                android:visibility="gone" />
-        </LinearLayout>
-    </ScrollView>
+        <android.widget.Button
+            android:id="@+id/btn_zoom_out"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:background="@android:color/transparent"
+            android:text="-" />
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

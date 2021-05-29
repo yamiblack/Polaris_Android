@@ -20,7 +20,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="322dp"
         android:orientation="vertical"
         android:padding="10dp">
 
@@ -64,17 +64,97 @@
             android:textColor="@android:color/white"
             android:textColorHint="@android:color/white" />
 
-        <Button
-            android:id="@+id/btn_signUp"
+        <EditText
+            android:id="@+id/et_nickName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:layout_marginTop="10dp"
             android:layout_marginEnd="5dp"
-            android:background="@drawable/button_white_rounded"
-            android:fontFamily="@font/nanumsquarebold"
-            android:text="회원가입"
-            android:textColor="@color/colorPrimary" />
+            android:layout_marginBottom="5dp"
+            android:backgroundTint="@android:color/white"
+            android:hint="닉네임"
+            android:inputType="textEmailAddress"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white" />
+
+        <EditText
+            android:id="@+id/et_bodyCheck"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:hint="불편하신 신체 부위"
+            android:backgroundTint="@android:color/white"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="1">
+                <!-- 동의 체크 -->
+                <CheckBox
+                    android:id="@+id/register_noneall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text="없음"
+                    android:textColor="@color/white"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="1">
+                <!-- 동의 체크 -->
+                <CheckBox
+                    android:id="@+id/register_looking"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text="시각"
+                    android:textColor="@color/white"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="1">
+                <!-- 동의 체크 -->
+                <CheckBox
+                    android:id="@+id/register_hearing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text="청각"
+                    android:textColor="@color/white"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
+    <android.widget.Button
+        android:id="@+id/btn_signUp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="5dp"
+        android:background="@drawable/button_white_rounded"
+        android:fontFamily="@font/nanumsquarebold"
+        android:text="회원가입" />
 </LinearLayout>

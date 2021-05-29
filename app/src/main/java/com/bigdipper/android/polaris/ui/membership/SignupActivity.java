@@ -19,16 +19,35 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class SignupActivity extends Activity {
     private static final String TAG = "SignUpActivity";
+    private EditText etEmail;
+    private EditText etPass;
+    private EditText etverifyPass;
+    private EditText etNickName;
 
     private FirebaseAuth mAuth;
+    DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+    DatabaseReference conditionRef = mRootRef.child("text");
+    DatabaseReference conditionRefEmail = mRootRef.child("email");
+    DatabaseReference conditionRefPasswd = mRootRef.child("passwd");
+    DatabaseReference conditionRefNickName = mRootRef.child("nickname");
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+
+        etEmail = findViewById(R.id.et_email);
+        etPass = findViewById(R.id.et_password);
+        etverifyPass = findViewById(R.id.et_verifyPassword);
+        etNickName = findViewById(R.id.et_nickName);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -39,16 +58,33 @@ public class SignupActivity extends Activity {
     public void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        conditionRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String text = dataSnapshot.getValue(String.class);
+                etEmail.setText(text);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+
             switch (view.getId()) {
                 case R.id.btn_signUp:
                     signUp();
                     break;
             }
+            conditionRefEmail.setValue(etEmail.getText().toString());
+            conditionRefPasswd.setValue(etPass.getText().toString());
+            conditionRefNickName.setValue(etNickName.getText().toString());
         }
     };
 
@@ -93,7 +129,6 @@ public class SignupActivity extends Activity {
         } else {
             startToast("이메일 또는 비밀번호를 입력해주세요. ");
         }
-
     }
 
     private void startToast(String msg) {
