@@ -17,6 +17,7 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".ui.membership.LoginActivity" />
         <activity android:name=".ui.membership.SignupActivity" />
+        <activity android:name=".ui.mypage.ModifyVibrationActivity" />
 
         <activity
             android:name=".SplashActivity"

@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,12 +27,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.bigdipper.android.polaris.POI.POILocation;
+import com.bigdipper.android.polaris.entity.POILocation;
 import com.bigdipper.android.polaris.R;
+import com.bigdipper.android.polaris.entity.NavPath;
 import com.skt.Tmap.TMapData;
 import com.skt.Tmap.TMapGpsManager;
 import com.skt.Tmap.TMapMarkerItem;
@@ -53,16 +56,13 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 public class NearbyFragment extends Fragment implements TMapGpsManager.onLocationChangedCallback {
 
     private static final String TAG = "NearbyFragment";
 
-    //    static String API_Key = "l7xx57fa48d037ad47f6bfdadc9ff4b5e33c"; // 메인
-//    static String API_Key = "l7xx23e9a48d31d54d329e28dde4fce61161"; // test 1
-//    static String API_Key = "l7xx8587ca243f924b9996e7c5b8ea0a6075"; // test 2
-    static String API_Key = "l7xxf744614311fb4f578cb721f90eedc763"; // test 3
-
+    static String API_Key;
 
     FrameLayout tMap;
     TMapView tMapView = null;
@@ -93,15 +93,22 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
     LinearLayout searchResultLayout;
 
     //addd for find path
+    double destinationLatitude, destinationLongitude;
     String destinationName;
-    double destinationLatitude;
-    double destinationLongitude;
     TextView showPath;
+    NodeList nodeListPlacemark; // placemark data from kml
+    List<NavPath> navPaths;
 
     // Keyboard
     InputMethodManager mInputMethodManager;
 
     static double longitude, latitude;
+
+    @Override
+    public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        API_Key = getResources().getString(R.string.API_KEY_TEST_3);
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -133,23 +140,22 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
             public void onClick(View v) {
                 tMapView.setTrackingMode(false);
                 searchText.setText("");
-                searchText.clearFocus();
+//                searchText.clearFocus();
                 cancelBtn.setVisibility(View.GONE);
                 directionBtn.setVisibility(View.VISIBLE);
                 zoomBtnLayout.setVisibility(View.VISIBLE);
                 searchResultScrollView.setVisibility(View.GONE);
-                searchSelectedLayout.setVisibility(View.GONE);
                 tMapView.removeAllMarkerItem();
                 searchResultLayout.removeAllViews();
-                new Thread(){
-                    @Override
-                    public void run() {
-                        mInputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                    }
-                }.start();
-                selectedSearchName.setText("");
-                selectedSearchBizName.setText("");
-                selectedSearchAddress.setText("");
+//                new Thread(){
+//                    @Override
+//                    public void run() {
+//                        mInputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+//                    }
+//                }.start();
+//                selectedSearchName.setText("");
+//                selectedSearchBizName.setText("");
+//                selectedSearchAddress.setText("");
             }
         });
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -172,10 +178,6 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
                         mInputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
                     }
                 }.start();
-                selectedSearchName.setText("");
-                selectedSearchBizName.setText("");
-                selectedSearchAddress.setText("");
-
             }
         });
         directionBtn.setOnClickListener(new View.OnClickListener() {
@@ -225,7 +227,7 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
                 new Thread() {
                     @Override
                     public void run() {
-                        // 해당 위치로 길안내 시작 kim 연동 필요
+                        getPathDataXML();
                     }
                 }.start();
             }
@@ -235,8 +237,7 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
         searchText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                searchResultLayout.removeAllViews();
-                cancelBtn.setVisibility(View.VISIBLE);
+//                searchResultLayout.removeAllViews();
             }
 
             @Override
@@ -246,24 +247,21 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
 
             @Override
             public void afterTextChanged(Editable s) {
+                searchResultLayout.removeAllViews();
                 searchResultScrollView.setVisibility(View.VISIBLE);
                 directionBtn.setVisibility(View.GONE);
                 zoomBtnLayout.setVisibility(View.GONE);
-                new Thread() {
-                    @Override
-                    public void run() {
-                        try {
-                            String searchKeyword = searchText.getText().toString();
-
-                            URL searchUrl = new URL("https://apis.openapi.sk.com/tmap/pois?appKey=" + API_Key + "&version=1&searchKeyword=" + searchKeyword + "&searchtypCd=R&radius=0&centerLon=" + longitude + "&centerLat=" + latitude);
-                            Runnable search = new SearchPOI(searchUrl);
-                            Thread searchThread = new Thread(search);
-                            searchThread.start();
-                        } catch (MalformedURLException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }.start();
+                searchSelectedLayout.setVisibility(View.GONE);
+                cancelBtn.setVisibility(View.VISIBLE);
+                String searchKeyword = s.toString();
+                try {
+                    URL searchUrl = new URL("https://apis.openapi.sk.com/tmap/pois?appKey=" + API_Key + "&version=1&searchKeyword=" + searchKeyword + "&searchtypCd=R&radius=0&centerLon=" + longitude + "&centerLat=" + latitude);
+                    Runnable search = new SearchPOI(searchUrl);
+                    Thread searchThread = new Thread(search);
+                    searchThread.start();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -342,8 +340,6 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
                 1000,
                 1,
                 mLocationListener);
-
-
         return root;
     }
 
@@ -457,26 +453,26 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
                     markerItem.setTMapPoint(tMapPoint1); // 마커의 좌표 지정
                     markerItem.setName(destinationName); // 마커의 타이틀 지정
                     tMapView.addMarkerItem("markerItem1", markerItem); // 지도에 마커 추가
+                    selectedSearchName.setText(selectedName);
+                    selectedSearchBizName.setText(selectedBizName);
+                    selectedSearchAddress.setText(selectedAddress);
 
-                    getActivity().runOnUiThread((new Runnable() {
-
+                    searchSelectedLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void run() {
-                            selectedSearchName.setText(selectedName);
-                            selectedSearchBizName.setText(selectedBizName);
-                            selectedSearchAddress.setText(selectedAddress);
-
-                            searchSelectedLayout.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    compassMode = 1;
-                                    tMapView.setTrackingMode(false);
-                                    tMapView.setCenterPoint(destinationLongitude, destinationLatitude);
-                                }
-                            });
-                            searchSelectedLayout.setVisibility(View.VISIBLE);
+                        public void onClick(View v) {
+                            compassMode = 1;
+                            tMapView.setTrackingMode(false);
+                            tMapView.setCenterPoint(destinationLongitude, destinationLatitude);
                         }
-                    }));
+                    });
+                    searchSelectedLayout.setVisibility(View.VISIBLE);
+//                    getActivity().runOnUiThread((new Runnable() {
+//
+//                        @Override
+//                        public void run() {
+//
+//                        }
+//                    }));
 
                 }
             });
@@ -489,14 +485,12 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
             TextView resultBizName = new TextView(getContext());
             TextView resultRoadAddress = new TextView(getContext());
 
-            try {
-                resultName.setText(searchResult.get(i).getName());
-                resultRadius.setText(" " + String.valueOf(searchResult.get(i).getRadius()));
-                resultBizName.setText(" " + searchResult.get(i).getBizName());
-                resultRoadAddress.setText(searchResult.get(i).getRoadAddress());
-            } catch (IndexOutOfBoundsException e) {
-                Log.e(TAG, "not found result");
-            }
+            resultName.setTextColor(Color.BLACK);
+            resultName.setTextSize(15);
+            resultBizName.setGravity(Gravity.RIGHT);
+            resultBizName.setTextColor(ContextCompat.getColor(getContext(), R.color.biz_radius_color));
+            resultRadius.setGravity(Gravity.RIGHT);
+            resultRadius.setTextColor(ContextCompat.getColor(getContext(), R.color.biz_radius_color));
 
             searchResultNameLayout.addView(resultName);
             searchResultNameLayout.addView(resultBizName);
@@ -507,116 +501,189 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
             searchElementLayout.addView(searchResultAddressLayout);
 
             searchResultLayout.addView(searchElementLayout);
+
+            try {
+                resultName.setText(searchResult.get(i).getName());
+                resultRadius.setText(String.valueOf(searchResult.get(i).getRadius()));
+                resultBizName.setText(" " + searchResult.get(i).getBizName());
+                resultRoadAddress.setText(searchResult.get(i).getRoadAddress());
+            } catch (IndexOutOfBoundsException e) {
+                Log.e(TAG, "not found result");
+                continue;
+            }
         }
     }
 
     //add for find path
     private void drawPoly() {
-        TMapPoint startPoint = new TMapPoint(latitude, longitude); //현재 위치
-        TMapPoint endPoint = new TMapPoint(destinationLatitude, destinationLongitude); // (목적지)
-        Thread thread = new Thread() {
+        new Thread() {
             @Override
             public void run() {
                 try {
-                    TMapPolyLine tMapPolyLine = new TMapData().findPathDataWithType(TMapData.TMapPathType.PEDESTRIAN_PATH, startPoint, endPoint);
+                    TMapPolyLine tMapPolyLine = new TMapData().findPathDataWithType(TMapData.TMapPathType.PEDESTRIAN_PATH, new TMapPoint(latitude, longitude), new TMapPoint(destinationLatitude, destinationLongitude));
+
                     tMapPolyLine.setLineColor(Color.BLUE);
                     tMapPolyLine.setLineWidth(2);
-                    tMapView.addTMapPolyLine("TestLine1", tMapPolyLine);
+//                    tMapPolyLine.addLinePoint(new TMapPoint(latitude, longitude));
+//                    for(int i = 0; i<navPaths.size(); i++){
+//                        tMapPolyLine.addLinePoint(new TMapPoint(Double.parseDouble(navPaths.get(i).getLatitude()), Double.parseDouble(navPaths.get(i).getLongitude())));
+//                        Log.e("addLinePoint", "lat "+ navPaths.get(i).getLatitude() + " lon " + navPaths.get(i).getLongitude());
+//                    }
+                    tMapView.addTMapPolyLine("path", tMapPolyLine);
+
+                    Log.e("pathPoints_getPAss", "" + tMapPolyLine.getPassPoint().size());
+                    for(int i = 0; i<tMapPolyLine.getPassPoint().size(); i++){
+                        Log.e("pathPoints_Pass", "lat "+tMapPolyLine.getPassPoint().get(i).getLatitude() + " lon " + tMapPolyLine.getPassPoint().get(i).getLongitude());
+                    }
+
+                    Log.e("pathPoints_getPAss", "" + tMapPolyLine.getLinePoint().size());
+                    for(int i = 0; i<tMapPolyLine.getLinePoint().size(); i++){
+                        Log.e("pathPoints_Line", "lat "+tMapPolyLine.getLinePoint().get(i).getLatitude() + " lon " + tMapPolyLine.getLinePoint().get(i).getLongitude());
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 super.run();
             }
-        };
-        thread.start();
+        }.start();
     }
 
-    private class GetPath implements Runnable {
-
+    //add for find path
+    //if choose poi -> call this
+    private void getPathDataXML() {
         TMapPoint endPoint = new TMapPoint(destinationLatitude, destinationLongitude);
-        TMapPoint startPint = new TMapPoint(latitude, longitude);
-
-        @Override
-        public void run() {
-            tmapData.findPathDataAllType(TMapData.TMapPathType.PEDESTRIAN_PATH, startPint, endPoint, new TMapData.FindPathDataAllListenerCallback() {
-                @Override
-                public void onFindPathDataAll(Document document) {
-                    Element root = document.getDocumentElement();
-                    NodeList nodeListPlacemark = root.getElementsByTagName("Placemark");
-                    for (int i = 0; i < nodeListPlacemark.getLength(); i++) {
-                        NodeList nodeListPlacemarkItem = nodeListPlacemark.item(i).getChildNodes();
-                        for (int j = 0; j < nodeListPlacemarkItem.getLength(); j++) {
-                            if (nodeListPlacemarkItem.item(j).getNodeName().equals("description")) {
-                                Log.d("debug", nodeListPlacemarkItem.item(j).getTextContent().trim());
-                            }
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    tmapData.findPathDataAllType(TMapData.TMapPathType.PEDESTRIAN_PATH, tMapView.getLocationPoint(), endPoint, new TMapData.FindPathDataAllListenerCallback() {
+                        @Override
+                        public void onFindPathDataAll(Document document) {
+                            Element root = document.getDocumentElement();
+                            nodeListPlacemark = root.getElementsByTagName("Placemark");  //get placemarks in kml
+                            Log.e("getPAthDataXML", "호출됨");
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    while (true) {
+                        if (nodeListPlacemark != null) {
+                            navigatePath();
+                            break;
                         }
                     }
                 }
-            });
+                super.run();
+            }
+        }.start();
+    }
+
+    //add for find path
+    private void navigatePath() {
+        drawPoly();
+        navPaths = new ArrayList<>();
+        try {
+            for (int i = 0; i < nodeListPlacemark.getLength(); i++) {
+                NodeList nodeListPlacemarkItem = nodeListPlacemark.item(i).getChildNodes();
+                String index = null, pathLongitude = null, pathLatitude = null, turntype =null;
+                for (int j = 0; j < nodeListPlacemarkItem.getLength(); j++) {
+
+//                    Log.e("datas", ""+nodeListPlacemarkItem.item(j).getNodeName().trim() + " "+nodeListPlacemarkItem.item(j).getTextContent().trim());
+
+                    if (nodeListPlacemarkItem.item(j).getNodeName().equals("tmap:index")) {
+                        index = nodeListPlacemarkItem.item(j).getTextContent().trim();
+                    }
+                    if (nodeListPlacemarkItem.item(j).getNodeName().equals("LineString")) {
+                        String tmp = nodeListPlacemarkItem.item(j).getTextContent().trim();
+                        int findSpace = tmp.indexOf(' ');
+                        if(findSpace == -1){ //1개만 존재
+                            int findComma = tmp.indexOf(',');
+                            pathLongitude = tmp.substring(0, findComma);
+                            pathLatitude = tmp.substring(findComma+1);
+                        }
+                        else{
+                            String firstPosition = tmp.substring(0, findSpace);
+                            int findComma = firstPosition.indexOf(',');
+                            pathLongitude = firstPosition.substring(0, findComma);
+                            pathLatitude = firstPosition.substring(findComma+1);
+                        }
+                    }
+                    if (nodeListPlacemarkItem.item(j).getNodeName().equals("Point")) {
+                        String tmp = nodeListPlacemarkItem.item(j).getTextContent().trim();
+                        int findSpace = tmp.indexOf(' ');
+                        if(findSpace == -1){ //1개만 존재
+                            int findComma = tmp.indexOf(',');
+                            pathLongitude = tmp.substring(0, findComma);
+                            pathLatitude = tmp.substring(findComma+1);
+                        }
+                        else{
+                            String firstPosition = tmp.substring(0, findSpace);
+                            int findComma = firstPosition.indexOf(',');
+                            pathLongitude = firstPosition.substring(0, findComma);
+                            pathLatitude = firstPosition.substring(findComma+1);
+                        }
+                    }
+                    if (nodeListPlacemarkItem.item(j).getNodeName().equals("tmap:turnType")) {
+                        turntype = nodeListPlacemarkItem.item(j).getTextContent().trim();
+                    }
+                }
+                Log.e("navPathData", "index " + index + "  lat " + pathLatitude + " lon " + pathLongitude + " turn " + turntype);
+                navPaths.add(new NavPath(index, pathLatitude, pathLongitude, turntype));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        new Thread() {
+            @Override
+            public void run() {
+                int index = 0;
+                Log.e("nvaleng", ""+navPaths.size());
+                while (index+2 < navPaths.size()) {
+                    TMapPoint curPoint = new TMapPoint(latitude, longitude);
+                    double curNavDistance = 0;
+                    try {
+                        curNavDistance = distance(latitude, longitude, Double.parseDouble(navPaths.get(index).getLatitude()), Double.parseDouble(navPaths.get(index).getLongitude())) * 1000;
+                        if(curNavDistance < 2)
+                            index+=2;
+//                        drawPoly();
+                        Log.e("navigation", "목적지 까지 남은 거리: " + (int)curNavDistance + " 현재 방향: " + navPaths.get(index).getTurnType());
+                        Log.e("navigation", "다음 방향: " + navPaths.get(index+2).getTurnType());
+                        index+=2;
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
+        try {
+            Thread.sleep(3000);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    //add for find fath
-//    private void getPathDataXML(){
-//        showPath.setVisibility(View.VISIBLE);
-//        TMapPoint endPoint = new TMapPoint(destinationLatitude, destinationLongitude);
-//        TMapPoint startPint = new TMapPoint(latitude, longitude);
-//        StringBuilder navInfo = new StringBuilder("이동정보:\n");
-//
-//        new Thread(){
-//            @Override
-//            public void run() {
-//                while (true){
-//                    try {
-//                        drawPoly();
-//                        tmapData.findPathDataAllType(TMapData.TMapPathType.PEDESTRIAN_PATH, startPint, endPoint, new TMapData.FindPathDataAllListenerCallback() {
-//                            @Override
-//                            public void onFindPathDataAll(Document document) {
-//                                Element root = document.getDocumentElement();
-//
-//                                NodeList nodeListPlacemark = root.getElementsByTagName("Placemark");
-//
-//                                for (int i = 0; i < nodeListPlacemark.getLength(); i++) {
-//                                    NodeList nodeListPlacemarkItem = nodeListPlacemark.item(i).getChildNodes();
-//                                    for (int j = 0; j < nodeListPlacemarkItem.getLength(); j++) {
-//                                        if (nodeListPlacemarkItem.item(j).getNodeName().equals("tmap:distance")) {
-//                                            Log.e("distance", nodeListPlacemarkItem.item(j).getTextContent().trim() + "미터");
-//                                        }
-//                                        if (nodeListPlacemarkItem.item(j).getNodeName().equals("tmap:turntype")) {
-//                                            Log.e("turntype", nodeListPlacemarkItem.item(j).getTextContent().trim() + "방향");
-//                                        }
-//                                        //description
-//                                        if (nodeListPlacemarkItem.item(j).getNodeName().equals("description")) {
-//                                            navInfo.append(nodeListPlacemarkItem.item(j).getTextContent().trim() + "\n");
-//                                            Log.e("description", nodeListPlacemarkItem.item(j).getTextContent().trim());
-//                                        }
-//                                    }
-//                                }
-//                                Log.e("navInfo", "info: " + navInfo);
-//                                getActivity().runOnUiThread((new Runnable(){
-//
-//                                    @Override
-//                                    public void run() {
-//                                        showPath.setText(navInfo);
-//
-//                                    }
-//                                }));
-//                            }
-//                        });
-//
-//                    }
-//                    catch (Exception e){
-//                        e.printStackTrace();
-//                    }
-//                    super.run();
-//                }
-//            }
-//        }.start();
-//        try {
-//            Thread.sleep(1000);
-//        } catch(InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    private double distance(double lat1, double lon1, double lat2, double lon2) {
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2))
+                + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2))
+                * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+        dist = dist * 1.609344;
+        return (dist);
+    }
+    private double rad2deg(double rad) {
+
+        return (rad * 180.0 / Math.PI);
+
+    }
+    private double deg2rad(double deg) {
+
+        return (deg * Math.PI / 180.0);
+
+    }
 
 }

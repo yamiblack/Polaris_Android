@@ -3,4 +3,11 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+
+    <string name="modifyVibration">진동 설정</string> // Modify Vibration
+    <string name="apply">적용</string> // apply
+    <string name="reset">초기화</string> // reset
+    <string name="straight">직진</string> // straight
+    <string name="left">좌회전</string> // left
+    <string name="right">우회전</string> // right
 </resources>

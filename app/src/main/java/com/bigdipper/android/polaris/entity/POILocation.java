@@ -1,4 +1,4 @@
-package com.bigdipper.android.polaris.POI;
+package com.bigdipper.android.polaris.entity;
 
 public class POILocation {
 
