@@ -107,7 +107,7 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
     @Override
     public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        API_Key = getResources().getString(R.string.API_KEY_TEST_2);
+        API_Key = getResources().getString(R.string.tmap_app_key_sub_1);
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
