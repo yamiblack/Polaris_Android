@@ -102,6 +102,10 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
     // Keyboard
     InputMethodManager mInputMethodManager;
 
+    // for draw path by kim
+    List<TMapPoint> drawPolyList;
+    int drawPathCount = 0;
+
     static double longitude, latitude;
 
     @Override
@@ -128,6 +132,9 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
         zoomBtnLayout = root.findViewById(R.id.btn_zoom_layout);
         searchSelectedLayout = root.findViewById(R.id.layout_search_selected);
         searchResultScrollView = root.findViewById(R.id.sv_search_result);
+
+        // for draw path by kim
+        drawPolyList = new ArrayList<>();
 
         // showPath = root.findViewById(R.id.tv_show_path);
         mInputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -172,7 +179,7 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
                 directionBtn.setVisibility(View.VISIBLE);
                 zoomBtnLayout.setVisibility(View.VISIBLE);
                 tMapView.removeAllMarkerItem();
-                new Thread(){
+                new Thread() {
                     @Override
                     public void run() {
                         mInputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
@@ -514,36 +521,48 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
         }
     }
 
-    //add for find path
+    //change for drawPoly by kim
     private void drawPoly() {
         new Thread() {
             @Override
             public void run() {
-                try {
-                    TMapPolyLine tMapPolyLine = new TMapData().findPathDataWithType(TMapData.TMapPathType.PEDESTRIAN_PATH, new TMapPoint(latitude, longitude), new TMapPoint(destinationLatitude, destinationLongitude));
-
-                    tMapPolyLine.setLineColor(Color.BLUE);
-                    tMapPolyLine.setLineWidth(2);
-//                    tMapPolyLine.addLinePoint(new TMapPoint(latitude, longitude));
-//                    for(int i = 0; i<navPaths.size(); i++){
-//                        tMapPolyLine.addLinePoint(new TMapPoint(Double.parseDouble(navPaths.get(i).getLatitude()), Double.parseDouble(navPaths.get(i).getLongitude())));
-//                        Log.e("addLinePoint", "lat "+ navPaths.get(i).getLatitude() + " lon " + navPaths.get(i).getLongitude());
-//                    }
-                    tMapView.addTMapPolyLine("path", tMapPolyLine);
-
-                    Log.e("pathPoints_getPAss", "" + tMapPolyLine.getPassPoint().size());
-                    for(int i = 0; i<tMapPolyLine.getPassPoint().size(); i++){
-                        Log.e("pathPoints_Pass", "lat "+tMapPolyLine.getPassPoint().get(i).getLatitude() + " lon " + tMapPolyLine.getPassPoint().get(i).getLongitude());
+                while (true) {
+                    Log.e("drawPoly 호출됨 ", "ㅇㅇㅇ");
+                    try {
+                        if (drawPolyList.isEmpty()) {
+                            Log.e("drawPoly 사용량 차지", "ㅇㅇㅇ" + drawPathCount);
+                            TMapPolyLine tMapPolyLineData = new TMapData().findPathDataWithType(TMapData.TMapPathType.PEDESTRIAN_PATH, new TMapPoint(latitude, longitude), new TMapPoint(destinationLatitude, destinationLongitude));
+                            for (int i = 0; i < tMapPolyLineData.getLinePoint().size(); i++) {
+                                Log.e("drawPolyAdd", "삽입중 " + i);
+                                Log.e("drawPolyAdd", " " + tMapPolyLineData.getLinePoint().get(i).getLatitude() + " " + tMapPolyLineData.getLinePoint().get(i).getLongitude());
+                                drawPolyList.add(new TMapPoint(tMapPolyLineData.getLinePoint().get(i).getLatitude(), tMapPolyLineData.getLinePoint().get(i).getLongitude()));
+                            }
+                        }
+                        Log.e("drawPoly 사용량 차지 안함", "ㅇㅇㅇ" + drawPathCount);
+                        TMapPolyLine tMapPolyLine = new TMapPolyLine();
+                        tMapPolyLine.setLineColor(Color.BLUE);
+                        tMapPolyLine.setLineWidth(2);
+                        if (distance(latitude, longitude, drawPolyList.get(drawPathCount).getLatitude(), drawPolyList.get(drawPathCount).getLongitude()) * 1000 == 2) {
+                            drawPathCount++;
+                        }
+                        tMapPolyLine.addLinePoint(new TMapPoint(latitude, longitude));
+                        for (int i = drawPathCount; i < drawPolyList.size() - 1; i++) {
+                            tMapPolyLine.addLinePoint(new TMapPoint(drawPolyList.get(i).getLatitude(), drawPolyList.get(i).getLongitude()));
+                            Log.e("저장 확인", " " + i + " " + drawPolyList.get(i).getLatitude() + " " + drawPolyList.get(i).getLongitude());
+                        }
+                        tMapView.addTMapPolyLine("path", tMapPolyLine);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
 
-                    Log.e("pathPoints_getPAss", "" + tMapPolyLine.getLinePoint().size());
-                    for(int i = 0; i<tMapPolyLine.getLinePoint().size(); i++){
-                        Log.e("pathPoints_Line", "lat "+tMapPolyLine.getLinePoint().get(i).getLatitude() + " lon " + tMapPolyLine.getLinePoint().get(i).getLongitude());
+                    try {
+                        Thread.sleep(3000);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+
+                    super.run();
                 }
-                super.run();
             }
         }.start();
     }
@@ -552,6 +571,9 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
     //if choose poi -> call this
     private void getPathDataXML() {
         TMapPoint endPoint = new TMapPoint(destinationLatitude, destinationLongitude);
+        drawPolyList.clear(); // 경로 삭제
+        drawPathCount = 0;
+        drawPoly();
         new Thread() {
             @Override
             public void run() {
@@ -581,12 +603,11 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
 
     //add for find path
     private void navigatePath() {
-        drawPoly();
         navPaths = new ArrayList<>();
         try {
             for (int i = 0; i < nodeListPlacemark.getLength(); i++) {
                 NodeList nodeListPlacemarkItem = nodeListPlacemark.item(i).getChildNodes();
-                String index = null, pathLongitude = null, pathLatitude = null, turntype =null;
+                String index = null, pathLongitude = null, pathLatitude = null, turntype = null;
                 for (int j = 0; j < nodeListPlacemarkItem.getLength(); j++) {
 
 //                    Log.e("datas", ""+nodeListPlacemarkItem.item(j).getNodeName().trim() + " "+nodeListPlacemarkItem.item(j).getTextContent().trim());
@@ -597,31 +618,29 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
                     if (nodeListPlacemarkItem.item(j).getNodeName().equals("LineString")) {
                         String tmp = nodeListPlacemarkItem.item(j).getTextContent().trim();
                         int findSpace = tmp.indexOf(' ');
-                        if(findSpace == -1){ //1개만 존재
+                        if (findSpace == -1) { //1개만 존재
                             int findComma = tmp.indexOf(',');
                             pathLongitude = tmp.substring(0, findComma);
-                            pathLatitude = tmp.substring(findComma+1);
-                        }
-                        else{
+                            pathLatitude = tmp.substring(findComma + 1);
+                        } else {
                             String firstPosition = tmp.substring(0, findSpace);
                             int findComma = firstPosition.indexOf(',');
                             pathLongitude = firstPosition.substring(0, findComma);
-                            pathLatitude = firstPosition.substring(findComma+1);
+                            pathLatitude = firstPosition.substring(findComma + 1);
                         }
                     }
                     if (nodeListPlacemarkItem.item(j).getNodeName().equals("Point")) {
                         String tmp = nodeListPlacemarkItem.item(j).getTextContent().trim();
                         int findSpace = tmp.indexOf(' ');
-                        if(findSpace == -1){ //1개만 존재
+                        if (findSpace == -1) { //1개만 존재
                             int findComma = tmp.indexOf(',');
                             pathLongitude = tmp.substring(0, findComma);
-                            pathLatitude = tmp.substring(findComma+1);
-                        }
-                        else{
+                            pathLatitude = tmp.substring(findComma + 1);
+                        } else {
                             String firstPosition = tmp.substring(0, findSpace);
                             int findComma = firstPosition.indexOf(',');
                             pathLongitude = firstPosition.substring(0, findComma);
-                            pathLatitude = firstPosition.substring(findComma+1);
+                            pathLatitude = firstPosition.substring(findComma + 1);
                         }
                     }
                     if (nodeListPlacemarkItem.item(j).getNodeName().equals("tmap:turnType")) {
@@ -638,30 +657,28 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
             @Override
             public void run() {
                 int index = 0;
-                Log.e("nvaleng", ""+navPaths.size());
-                while (index+2 < navPaths.size()) {
+                Log.e("nvaleng", "" + navPaths.size());
+                while (index + 2 < navPaths.size()) {
                     TMapPoint curPoint = new TMapPoint(latitude, longitude);
                     double curNavDistance = 0;
                     try {
                         curNavDistance = distance(latitude, longitude, Double.parseDouble(navPaths.get(index).getLatitude()), Double.parseDouble(navPaths.get(index).getLongitude())) * 1000;
-                        if(curNavDistance < 2)
-                            index+=2;
-//                        drawPoly();
-                        Log.e("navigation", "목적지 까지 남은 거리: " + (int)curNavDistance + " 현재 방향: " + navPaths.get(index).getTurnType());
-                        Log.e("navigation", "다음 방향: " + navPaths.get(index+2).getTurnType());
-                        index+=2;
+                        if (curNavDistance < 2)
+                            index += 2;
+                        Log.e("navigation", "목적지 까지 남은 거리: " + (int) curNavDistance + " 현재 방향: " + navPaths.get(index).getTurnType());
+                        Log.e("navigation", "다음 방향: " + navPaths.get(index + 2).getTurnType());
+                        index += 2;
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    catch (Exception e){
+                    try {
+                        Thread.sleep(3000);
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }
         }.start();
-        try {
-            Thread.sleep(3000);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private double distance(double lat1, double lon1, double lat2, double lon2) {
@@ -675,11 +692,13 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
         dist = dist * 1.609344;
         return (dist);
     }
+
     private double rad2deg(double rad) {
 
         return (rad * 180.0 / Math.PI);
 
     }
+
     private double deg2rad(double deg) {
 
         return (deg * Math.PI / 180.0);
