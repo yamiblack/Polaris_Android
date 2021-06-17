@@ -50,6 +50,7 @@ dependencies {
     implementation files('libs/com.skt.Tmap_1.67.jar')
     implementation files('libs/accessory-v2.6.4.jar')
     implementation files('libs/sdk-v1.0.0.jar')
+    implementation 'com.google.firebase:firebase-firestore:23.0.1'
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

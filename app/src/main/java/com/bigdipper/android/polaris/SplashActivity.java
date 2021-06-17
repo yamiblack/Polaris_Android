@@ -31,8 +31,8 @@ public class SplashActivity extends Activity {
                 if (FirebaseAuth.getInstance().getCurrentUser() == null) {
                     startActivity(new Intent((getApplication()), LoginActivity.class));
                 } else {
-//                    startActivity(new Intent((getApplication()), MainActivity.class));
-                    startActivity(new Intent((getApplication()), MessageActivity.class));
+                    startActivity(new Intent((getApplication()), MainActivity.class));
+//                    startActivity(new Intent((getApplication()), MessageActivity.class));
                 }
             }
         }, SPLASH_TIME);

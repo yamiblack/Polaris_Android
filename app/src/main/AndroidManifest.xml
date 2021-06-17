@@ -25,7 +25,8 @@
         <activity android:name=".ui.membership.LoginActivity" />
         <activity android:name=".ui.membership.SignupActivity" />
         <activity android:name=".ui.mypage.ModifyVibrationActivity" />
-        <activity android:name=".MessageActivity"/>
+        <activity android:name=".ui.mypage.STTwordsActivity" />
+        <activity android:name=".MessageActivity" />
 
         <activity
             android:name=".SplashActivity"
@@ -45,12 +46,12 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name="com.samsung.android.sdk.accessory.RegisterUponInstallReceiver" >
+        <receiver android:name="com.samsung.android.sdk.accessory.RegisterUponInstallReceiver">
             <intent-filter>
                 <action android:name="com.samsung.accessory.action.REGISTER_AGENT" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.samsung.android.sdk.accessory.ServiceConnectionIndicationBroadcastReceiver" >
+        <receiver android:name="com.samsung.android.sdk.accessory.ServiceConnectionIndicationBroadcastReceiver">
             <intent-filter>
                 <action android:name="com.samsung.accessory.action.SERVICE_CONNECTION_REQUESTED" />
             </intent-filter>

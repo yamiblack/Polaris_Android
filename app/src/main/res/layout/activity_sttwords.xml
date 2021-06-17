@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="180dp"
+        android:adjustViewBounds="true"
+        android:background="@drawable/ic_ai" />
+
+    <TextView
+        android:id="@+id/tv_stt_showWord"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="30dp"
+        android:fontFamily="@font/nanumsquarebold"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="25sp" />
+
+
+    <EditText
+        android:id="@+id/et_stt_writeWord"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:singleLine="true"
+        android:backgroundTint="@color/colorPrimary"
+        android:fontFamily="@font/nanumsquareregular"
+        android:hint="음성인식 단어를 입력해주세요."
+        android:textColor="@color/colorPrimary" />
+
+    <Button
+        android:id="@+id/btn_stt_setWord"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/button_blue_small_rounded"
+        android:fontFamily="@font/nanumsquarebold"
+        android:textColor="@color/white" />
+
+
+</LinearLayout>
