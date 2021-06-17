@@ -10,4 +10,22 @@
     <string name="straight">직진</string> // straight
     <string name="left">좌회전</string> // left
     <string name="right">우회전</string> // right
+
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello Accessory!</string>
+    <string name="ConnectionAcceptedMsg1">Service Connection from AccessoryConsumer has been accepted by AccessoryProvider.</string>
+    <string name="ConnectionAcceptedMsg2">Service Connection from MessageConsumer has been accepted by MessageProvider.</string>
+    <string name="ConnectionTerminateddMsg">Service Connection with AccessoryConsumer has been terminated.</string>
+    <string name="ConnectionTerminateddMsg2">Service Connection with MessageConsumer has been terminated.</string>
+    <string name="Aunthenticated">Peer Agent has been authenticated!!!</string>
+    <string name="recv_status">Recv Status</string>
+    <string name="recv_progress">Recv Progress</string>
+
+    <string name="title_activity_accessory">Accessory(P)</string>
+    <string name="title_activity_message">Message(P)</string>
+    <string name="title_activity_file_transfer">File Transfer(P)</string>
+    <string name="preference_tizen_message">tizen_message</string>
+    <string name="NoPeersFound">No peers have been found!!!</string>
+    <string name="buttonFindPeerAgent">Find PeerAgent</string>
+    <string name="buttonSend">Send</string>
 </resources>
