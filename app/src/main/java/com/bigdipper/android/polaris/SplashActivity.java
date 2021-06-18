@@ -5,12 +5,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.bigdipper.android.polaris.ui.membership.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,7 +28,6 @@ public class SplashActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -31,8 +35,7 @@ public class SplashActivity extends Activity {
                 if (FirebaseAuth.getInstance().getCurrentUser() == null) {
                     startActivity(new Intent((getApplication()), LoginActivity.class));
                 } else {
-                    startActivity(new Intent((getApplication()), MainActivity.class));
-//                    startActivity(new Intent((getApplication()), MessageActivity.class));
+                        startActivity(new Intent((getApplication()), MainActivity.class));
                 }
             }
         }, SPLASH_TIME);

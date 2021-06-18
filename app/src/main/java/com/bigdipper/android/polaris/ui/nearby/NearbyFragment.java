@@ -32,9 +32,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.bigdipper.android.polaris.MessageConsumer;
 import com.bigdipper.android.polaris.entity.POILocation;
 import com.bigdipper.android.polaris.R;
 import com.bigdipper.android.polaris.entity.NavPath;
+import com.samsung.android.sdk.accessory.SAAgentV2;
 import com.skt.Tmap.TMapData;
 import com.skt.Tmap.TMapGpsManager;
 import com.skt.Tmap.TMapMarkerItem;
@@ -92,7 +94,7 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
     // Dynamic View
     LinearLayout searchResultLayout;
 
-    //addd for find path
+    //add for find path
     double destinationLatitude, destinationLongitude;
     String destinationName;
     TextView showPath;
@@ -107,6 +109,10 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
     int drawPathCount = 0;
 
     static double longitude, latitude;
+
+    //add for watch Connection
+    private MessageConsumer mMessageConsumer = null;
+
 
     @Override
     public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
@@ -138,6 +144,10 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
 
         // showPath = root.findViewById(R.id.tv_show_path);
         mInputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        //add for watch Connection
+        initConnection();
+
 
         // Dynamic View
         searchResultLayout = (LinearLayout) root.findViewById(R.id.searchList);
@@ -530,15 +540,14 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
                     Log.e("drawPoly 호출됨 ", "ㅇㅇㅇ");
                     try {
                         if (drawPolyList.isEmpty()) {
-                            Log.e("drawPoly 사용량 차지", "ㅇㅇㅇ" + drawPathCount);
                             TMapPolyLine tMapPolyLineData = new TMapData().findPathDataWithType(TMapData.TMapPathType.PEDESTRIAN_PATH, new TMapPoint(latitude, longitude), new TMapPoint(destinationLatitude, destinationLongitude));
                             for (int i = 0; i < tMapPolyLineData.getLinePoint().size(); i++) {
-                                Log.e("drawPolyAdd", "삽입중 " + i);
+                                Log.e("drawPolyAdd", "add " + i);
                                 Log.e("drawPolyAdd", " " + tMapPolyLineData.getLinePoint().get(i).getLatitude() + " " + tMapPolyLineData.getLinePoint().get(i).getLongitude());
                                 drawPolyList.add(new TMapPoint(tMapPolyLineData.getLinePoint().get(i).getLatitude(), tMapPolyLineData.getLinePoint().get(i).getLongitude()));
                             }
                         }
-                        Log.e("drawPoly 사용량 차지 안함", "ㅇㅇㅇ" + drawPathCount);
+                        Log.e("drawPoly nousage", " " + drawPathCount);
                         TMapPolyLine tMapPolyLine = new TMapPolyLine();
                         tMapPolyLine.setLineColor(Color.BLUE);
                         tMapPolyLine.setLineWidth(2);
@@ -548,7 +557,6 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
                         tMapPolyLine.addLinePoint(new TMapPoint(latitude, longitude));
                         for (int i = drawPathCount; i < drawPolyList.size() - 1; i++) {
                             tMapPolyLine.addLinePoint(new TMapPoint(drawPolyList.get(i).getLatitude(), drawPolyList.get(i).getLongitude()));
-                            Log.e("저장 확인", " " + i + " " + drawPolyList.get(i).getLatitude() + " " + drawPolyList.get(i).getLongitude());
                         }
                         tMapView.addTMapPolyLine("path", tMapPolyLine);
                     } catch (Exception e) {
@@ -574,6 +582,7 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
         drawPolyList.clear(); // 경로 삭제
         drawPathCount = 0;
         drawPoly();
+
         new Thread() {
             @Override
             public void run() {
@@ -648,6 +657,7 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
                     }
                 }
                 Log.e("navPathData", "index " + index + "  lat " + pathLatitude + " lon " + pathLongitude + " turn " + turntype);
+
                 navPaths.add(new NavPath(index, pathLatitude, pathLongitude, turntype));
             }
         } catch (Exception e) {
@@ -657,22 +667,39 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
             @Override
             public void run() {
                 int index = 0;
+                double distanceTmp = distance(latitude, longitude, Double.parseDouble(navPaths.get(index).getLatitude()), Double.parseDouble(navPaths.get(index).getLongitude())) * 1000;
+
                 Log.e("nvaleng", "" + navPaths.size());
                 while (index + 2 < navPaths.size()) {
                     TMapPoint curPoint = new TMapPoint(latitude, longitude);
                     double curNavDistance = 0;
                     try {
                         curNavDistance = distance(latitude, longitude, Double.parseDouble(navPaths.get(index).getLatitude()), Double.parseDouble(navPaths.get(index).getLongitude())) * 1000;
-                        if (curNavDistance < 2)
+                        if (curNavDistance < 2) {
                             index += 2;
+                        }
+                        if (distanceTmp < 2) {
+                            index++;
+                            distanceTmp = curNavDistance;
+                        }
+
                         Log.e("navigation", "목적지 까지 남은 거리: " + (int) curNavDistance + " 현재 방향: " + navPaths.get(index).getTurnType());
                         Log.e("navigation", "다음 방향: " + navPaths.get(index + 2).getTurnType());
-                        index += 2;
+
+                        //add for watch Connection
+                        try {
+                            mMessageConsumer.sendData("to next destination " + Integer.toString((int) distanceTmp) + "m next direction is " + navPaths.get(index + 2).getTurnType());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        distanceTmp--;
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     try {
-                        Thread.sleep(3000);
+                        Thread.sleep(1000);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -705,4 +732,42 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
 
     }
 
+
+    //add for watch Connection
+    private SAAgentV2.RequestAgentCallback mAgentCallback2 = new SAAgentV2.RequestAgentCallback() {
+        @Override
+        public void onAgentAvailable(SAAgentV2 agent) {
+            mMessageConsumer = (MessageConsumer) agent;
+        }
+
+        @Override
+        public void onError(int errorCode, String message) {
+            Log.e(TAG, "Agent initialization error: " + errorCode + ". ErrorMsg: " + message);
+        }
+    };
+
+
+    //add for watch Connection
+    private void initConnection() {
+        Log.e("연결연결1", "연결연결1");
+        SAAgentV2.requestAgent(getActivity().getApplicationContext(), MessageConsumer.class.getName(), mAgentCallback2);
+        new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    if (mMessageConsumer != null) {
+                        mMessageConsumer.findPeers();
+                        Log.e("연결연결2", "연결연결2");
+                        break;
+                    }
+                    try {
+                        Thread.sleep(3000);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    super.run();
+                }
+            }
+        }.start();
+    }
 }
