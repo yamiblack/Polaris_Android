@@ -26,7 +26,6 @@
         <activity android:name=".ui.membership.SignupActivity" />
         <activity android:name=".ui.mypage.VibrationPatternActivity" />
         <activity android:name=".ui.mypage.SttActivity" />
-        <activity android:name=".MessageActivity" />
 
         <activity
             android:name=".SplashActivity"
