@@ -667,39 +667,30 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
             @Override
             public void run() {
                 int index = 0;
-                double distanceTmp = distance(latitude, longitude, Double.parseDouble(navPaths.get(index).getLatitude()), Double.parseDouble(navPaths.get(index).getLongitude())) * 1000;
-
                 Log.e("nvaleng", "" + navPaths.size());
                 while (index + 2 < navPaths.size()) {
                     TMapPoint curPoint = new TMapPoint(latitude, longitude);
                     double curNavDistance = 0;
                     try {
                         curNavDistance = distance(latitude, longitude, Double.parseDouble(navPaths.get(index).getLatitude()), Double.parseDouble(navPaths.get(index).getLongitude())) * 1000;
-                        if (curNavDistance < 2) {
+                        if (curNavDistance < 2){
                             index += 2;
                         }
-                        if (distanceTmp < 2) {
-                            index++;
-                            distanceTmp = curNavDistance;
-                        }
-
                         Log.e("navigation", "목적지 까지 남은 거리: " + (int) curNavDistance + " 현재 방향: " + navPaths.get(index).getTurnType());
                         Log.e("navigation", "다음 방향: " + navPaths.get(index + 2).getTurnType());
-
                         //add for watch Connection
-                        try {
-                            mMessageConsumer.sendData("to next destination " + Integer.toString((int) distanceTmp) + "m next direction is " + navPaths.get(index + 2).getTurnType());
-                        } catch (Exception e) {
+                        try{
+                            mMessageConsumer.sendData("nav/"+Integer.toString((int)curNavDistance)+"m/"+navPaths.get(index + 2).getTurnType());
+                        }
+                        catch (Exception e){
                             e.printStackTrace();
                         }
-
-                        distanceTmp--;
 
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(5000);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
