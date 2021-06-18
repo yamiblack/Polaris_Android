@@ -26,11 +26,12 @@ public class SplashActivity extends Activity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-                    startActivity(new Intent((getApplication()), LoginActivity.class));
-                } else {
-                    startActivity(new Intent((getApplication()), MainActivity.class));
-                }
+//                if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+//                    startActivity(new Intent((getApplication()), LoginActivity.class));
+//                } else {
+//                    startActivity(new Intent((getApplication()), MainActivity.class));
+                    startActivity(new Intent((getApplication()), ProviderActivity.class));
+//                }
             }
         }, SPLASH_TIME);
 

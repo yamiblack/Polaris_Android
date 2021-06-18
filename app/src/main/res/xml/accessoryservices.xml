@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<resources>
+
+<application name="Polaris">
+
+    <serviceProfile
+        id="/sample/hello"
+        name="helloaccessory"
+        role="provider"
+        serviceImpl="com.bigdipper.android.polaris.AccessoryProvider"
+        version="1.0"
+        serviceLimit="ANY"
+        serviceTimeout="10">
+        <supportedTransports>
+            <transport type="TRANSPORT_BT" />
+            <transport type="TRANSPORT_WIFI" />
+        </supportedTransports>
+        <serviceChannel
+            id="104"
+            dataRate="low"
+            priority="low"
+            reliability= "enable"/>
+    </serviceProfile>
+
+    <serviceProfile
+        name="hellomessage"
+        id="/sample/hellomessage"
+        role="consumer"
+        serviceImpl="com.bigdipper.android.polaris.MessageConsumer"
+        version="1.0">
+
+        <supportedTransports>
+            <transport type="TRANSPORT_BT" />
+            <transport type="TRANSPORT_WIFI" />
+        </supportedTransports>
+
+        <supportedFeatures>
+            <feature type="message" />
+        </supportedFeatures>
+
+    </serviceProfile>
+
+</application>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <files-path
+        name="my_images"
+        path="." />
+    <cache-path
+        name="my_cache"
+        path="." />
+    <external-path
+        name="ext"
+        path="." />
+</paths>
+</resources>

@@ -530,15 +530,14 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
                     Log.e("drawPoly 호출됨 ", "ㅇㅇㅇ");
                     try {
                         if (drawPolyList.isEmpty()) {
-                            Log.e("drawPoly 사용량 차지", "ㅇㅇㅇ" + drawPathCount);
                             TMapPolyLine tMapPolyLineData = new TMapData().findPathDataWithType(TMapData.TMapPathType.PEDESTRIAN_PATH, new TMapPoint(latitude, longitude), new TMapPoint(destinationLatitude, destinationLongitude));
                             for (int i = 0; i < tMapPolyLineData.getLinePoint().size(); i++) {
-                                Log.e("drawPolyAdd", "삽입중 " + i);
+                                Log.e("drawPolyAdd", "add " + i);
                                 Log.e("drawPolyAdd", " " + tMapPolyLineData.getLinePoint().get(i).getLatitude() + " " + tMapPolyLineData.getLinePoint().get(i).getLongitude());
                                 drawPolyList.add(new TMapPoint(tMapPolyLineData.getLinePoint().get(i).getLatitude(), tMapPolyLineData.getLinePoint().get(i).getLongitude()));
                             }
                         }
-                        Log.e("drawPoly 사용량 차지 안함", "ㅇㅇㅇ" + drawPathCount);
+                        Log.e("drawPoly nousage", " " + drawPathCount);
                         TMapPolyLine tMapPolyLine = new TMapPolyLine();
                         tMapPolyLine.setLineColor(Color.BLUE);
                         tMapPolyLine.setLineWidth(2);
