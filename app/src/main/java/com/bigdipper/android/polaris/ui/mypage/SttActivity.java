@@ -59,7 +59,7 @@ public class SttActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         email = auth.getCurrentUser().getEmail();
 
-        initConnection();
+        connectGalaxyWatch();
         getWord();
 
         if (!isSet) {
@@ -96,6 +96,7 @@ public class SttActivity extends AppCompatActivity {
                     getWord();
                     if (messageConsumer != null) {
                         messageConsumer.sendData("stt/" + word);
+
                         Toast.makeText(context, "성공적으로 설정됐습니다.", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(context, "갤럭시워치 연결을 확안해주세요.", Toast.LENGTH_SHORT).show();
@@ -144,8 +145,7 @@ public class SttActivity extends AppCompatActivity {
                 });
     }
 
-    //add for watch Connection
-    private SAAgentV2.RequestAgentCallback mAgentCallback2 = new SAAgentV2.RequestAgentCallback() {
+    private SAAgentV2.RequestAgentCallback agentCallback = new SAAgentV2.RequestAgentCallback() {
         @Override
         public void onAgentAvailable(SAAgentV2 agent) {
             messageConsumer = (MessageConsumer) agent;
@@ -157,16 +157,16 @@ public class SttActivity extends AppCompatActivity {
         }
     };
 
-    private void initConnection(){
-        Log.e("연결연결1", "연결연결1");
-        SAAgentV2.requestAgent(getApplicationContext(), MessageConsumer.class.getName(), mAgentCallback2);
-        new Thread(){
+    private void connectGalaxyWatch() {
+        Log.e("connection1", "success");
+        SAAgentV2.requestAgent(getApplicationContext(), MessageConsumer.class.getName(), agentCallback);
+        new Thread() {
             @Override
             public void run() {
-                while(true){
-                    if (messageConsumer != null){
+                while (true) {
+                    if (messageConsumer != null) {
                         messageConsumer.findPeers();
-                        Log.e("연결연결2", "연결연결2");
+                        Log.e("connection2", "success");
                         break;
                     }
                     try {

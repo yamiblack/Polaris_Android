@@ -2,6 +2,7 @@ package com.bigdipper.android.polaris.ui.mypage;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.samsung.android.sdk.accessory.SAAgentV2;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -27,7 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class VibrationPatternActivity extends AppCompatActivity {
-
+    private static final String TAG = "MessageActivity(C)";
     private Context context = this;
 
     private EditText etStraight;
@@ -67,6 +69,7 @@ public class VibrationPatternActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         email = auth.getCurrentUser().getEmail();
 
+        connectGalaxyWatch();
         getPattern();
 
         if (!isSet) {
@@ -118,14 +121,13 @@ public class VibrationPatternActivity extends AppCompatActivity {
 
                     getPattern();
                     if (messageConsumer != null) {
-                        messageConsumer.findPeers();
-                        messageConsumer.sendData("guide/" + etStraight.getText().toString() +  "/straight");
-                        messageConsumer.sendData("guide/" + etLeft.getText().toString() +  "/left");
-                        messageConsumer.sendData("guide/" + etRight.getText().toString() +  "/right");
-                        messageConsumer.sendData("guide/" + etTwo.getText().toString() +  "/two");
-                        messageConsumer.sendData("guide/" + etFour.getText().toString() +  "/four");
-                        messageConsumer.sendData("guide/" + etEight.getText().toString() +  "/eight");
-                        messageConsumer.sendData("guide/" + etTen.getText().toString() +  "/ten");
+                        messageConsumer.sendData("guide/" + etStraight.getText().toString() + "/straight");
+                        messageConsumer.sendData("guide/" + etLeft.getText().toString() + "/left");
+                        messageConsumer.sendData("guide/" + etRight.getText().toString() + "/right");
+                        messageConsumer.sendData("guide/" + etTwo.getText().toString() + "/two");
+                        messageConsumer.sendData("guide/" + etFour.getText().toString() + "/four");
+                        messageConsumer.sendData("guide/" + etEight.getText().toString() + "/eight");
+                        messageConsumer.sendData("guide/" + etTen.getText().toString() + "/ten");
 
                         Toast.makeText(context, "성공적으로 설정됐습니다.", Toast.LENGTH_SHORT).show();
                     } else {
@@ -141,7 +143,6 @@ public class VibrationPatternActivity extends AppCompatActivity {
             });
 
         }
-
     }
 
     public void getPattern() {
@@ -183,6 +184,41 @@ public class VibrationPatternActivity extends AppCompatActivity {
                     public void onFailure(@NonNull Exception e) {
                     }
                 });
+    }
+
+    private SAAgentV2.RequestAgentCallback agentCallback = new SAAgentV2.RequestAgentCallback() {
+        @Override
+        public void onAgentAvailable(SAAgentV2 agent) {
+            messageConsumer = (MessageConsumer) agent;
+        }
+
+        @Override
+        public void onError(int errorCode, String message) {
+            Log.e(TAG, "Agent initialization error: " + errorCode + ". ErrorMsg: " + message);
+        }
+    };
+
+    private void connectGalaxyWatch() {
+        Log.e("connection1", "success");
+        SAAgentV2.requestAgent(getApplicationContext(), MessageConsumer.class.getName(), agentCallback);
+        new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    if (messageConsumer != null) {
+                        messageConsumer.findPeers();
+                        Log.e("connection2", "success");
+                        break;
+                    }
+                    try {
+                        Thread.sleep(3000);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    super.run();
+                }
+            }
+        }.start();
     }
 
 
