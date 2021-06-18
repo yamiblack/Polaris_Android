@@ -53,14 +53,14 @@ public class MyPageFragment extends Fragment {
 
         btnSetSTTWords.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), STTwordsActivity.class);
+                Intent intent = new Intent(getContext(), SttActivity.class);
                 startActivity(intent);
             }
         });
 
         btnSetVibrationPattern.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), ModifyVibrationActivity.class);
+                Intent intent = new Intent(getContext(), VibrationPatternActivity.class);
                 startActivity(intent);
             }
         });
