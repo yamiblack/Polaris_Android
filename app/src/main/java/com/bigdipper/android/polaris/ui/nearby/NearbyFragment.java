@@ -2,6 +2,7 @@ package com.bigdipper.android.polaris.ui.nearby;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,6 +22,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -36,6 +38,16 @@ import com.bigdipper.android.polaris.MessageConsumer;
 import com.bigdipper.android.polaris.entity.POILocation;
 import com.bigdipper.android.polaris.R;
 import com.bigdipper.android.polaris.entity.NavPath;
+import com.bigdipper.android.polaris.ui.NavigationActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.samsung.android.sdk.accessory.SAAgentV2;
 import com.skt.Tmap.TMapData;
 import com.skt.Tmap.TMapGpsManager;
@@ -44,6 +56,7 @@ import com.skt.Tmap.TMapPoint;
 import com.skt.Tmap.TMapPolyLine;
 import com.skt.Tmap.TMapView;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,61 +71,67 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class NearbyFragment extends Fragment implements TMapGpsManager.onLocationChangedCallback {
 
     private static final String TAG = "NearbyFragment";
+    private static String API_Key;
 
-    static String API_Key;
-
-    FrameLayout tMap;
-    TMapView tMapView = null;
-    TMapData tmapData;
+    private FrameLayout tMap;
+    private TMapView tMapView = null;
+    private TMapData tmapData;
 
     // Value
-    int compassMode = 0; // 0: 현재위치, 1: 현재위치&나침반&시야각
-    String selectedName;
-    String selectedBizName;
-    String selectedAddress;
+    private int compassMode = 0; // 0: 현재위치, 1: 현재위치&나침반&시야각
+    private String selectedName;
+    private String selectedBizName;
+    private String selectedAddress;
 
     // View
-    EditText searchText;
-    TextView selectedSearchName;
-    TextView selectedSearchBizName;
-    TextView selectedSearchAddress;
-    Button cancelBtn;
-    Button backBtn;
-    Button directionBtn;
-    Button zoomInBtn;
-    Button zoomOutBtn;
-    Button startNaviBtn;
-    LinearLayout zoomBtnLayout;
-    LinearLayout searchSelectedLayout;
-    ScrollView searchResultScrollView;
+    private EditText searchText;
+    private TextView selectedSearchName;
+    private TextView selectedSearchBizName;
+    private TextView selectedSearchAddress;
+    private Button cancelBtn;
+    private Button backBtn;
+    private Button directionBtn;
+    private Button zoomInBtn;
+    private Button zoomOutBtn;
+    private Button startNaviBtn;
+    private ImageView ivFavorite;
+    private LinearLayout zoomBtnLayout;
+    private LinearLayout searchSelectedLayout;
+    private ScrollView searchResultScrollView;
 
     // Dynamic View
-    LinearLayout searchResultLayout;
+    private LinearLayout searchResultLayout;
 
-    //add for find path
-    double destinationLatitude, destinationLongitude;
-    String destinationName;
-    TextView showPath;
-    NodeList nodeListPlacemark; // placemark data from kml
-    List<NavPath> navPaths;
+    // add for find path
+    private static double destinationLatitude, destinationLongitude;
+    private String destinationName;
+    private TextView showPath;
+    private NodeList nodeListPlacemark; // placemark data from kml
+    private List<NavPath> navPaths;
 
     // Keyboard
-    InputMethodManager mInputMethodManager;
+    private InputMethodManager mInputMethodManager;
 
     // for draw path by kim
-    List<TMapPoint> drawPolyList;
-    int drawPathCount = 0;
+    private List<TMapPoint> drawPolyList;
+    private int drawPathCount = 0;
 
-    static double longitude, latitude;
+    private static double longitude, latitude;
 
-    //add for watch Connection
+    // add for watch Connection
     private MessageConsumer mMessageConsumer = null;
 
+    private FirebaseFirestore db;
+    private FirebaseAuth auth;
+    private String email;
+    private Boolean isFavorite = false;
 
     @Override
     public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
@@ -135,9 +154,14 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
         zoomInBtn = root.findViewById(R.id.btn_zoom_in);
         zoomOutBtn = root.findViewById(R.id.btn_zoom_out);
         startNaviBtn = root.findViewById(R.id.btn_selected_start_navi);
+        ivFavorite = root.findViewById(R.id.iv_favorite);
         zoomBtnLayout = root.findViewById(R.id.btn_zoom_layout);
         searchSelectedLayout = root.findViewById(R.id.layout_search_selected);
         searchResultScrollView = root.findViewById(R.id.sv_search_result);
+
+        db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
+        email = auth.getCurrentUser().getEmail();
 
         // for draw path by kim
         drawPolyList = new ArrayList<>();
@@ -147,7 +171,6 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
 
         //add for watch Connection
         initConnection();
-
 
         // Dynamic View
         searchResultLayout = (LinearLayout) root.findViewById(R.id.searchList);
@@ -164,15 +187,6 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
                 searchResultScrollView.setVisibility(View.GONE);
                 tMapView.removeAllMarkerItem();
                 searchResultLayout.removeAllViews();
-//                new Thread(){
-//                    @Override
-//                    public void run() {
-//                        mInputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
-//                    }
-//                }.start();
-//                selectedSearchName.setText("");
-//                selectedSearchBizName.setText("");
-//                selectedSearchAddress.setText("");
             }
         });
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -197,6 +211,7 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
                 }.start();
             }
         });
+
         directionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -215,6 +230,7 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
                 }
             }
         });
+
         zoomInBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -226,6 +242,7 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
                 }.start();
             }
         });
+
         zoomOutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -238,15 +255,30 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
             }
         });
 
+        ivFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setFavorite();
+            }
+        });
+
         startNaviBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new Thread() {
-                    @Override
-                    public void run() {
-                        getPathDataXML();
-                    }
-                }.start();
+                Intent intent = new Intent(getContext(), NavigationActivity.class);
+
+                intent.putExtra("destLati", String.valueOf(destinationLatitude));
+                intent.putExtra("destLong", String.valueOf(destinationLongitude));
+                intent.putExtra("lati", String.valueOf(latitude));
+                intent.putExtra("long", String.valueOf(longitude));
+                startActivity(intent);
+//                new Thread() {
+//                    @Override
+//                    public void run() {
+//                        getPathDataXML();
+//                    }
+//                }.start();
+
             }
         });
 
@@ -293,20 +325,6 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
             }
         });
 
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-//            Toast.makeText(container.getContext(), "잠시만 기다려주세요.", Toast.LENGTH_SHORT).show();
-//        }
-
-//        if (ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-//                && ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-//                Toast.makeText(container.getContext(), "잠시만 기다려주세요.", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-
         tMap = (FrameLayout) root.findViewById(R.id.ll_tmap);
 
         tMapView = new TMapView(getActivity().getApplicationContext());
@@ -319,7 +337,6 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
         tMapView.setCompassMode(false);
         tMapView.setZoomLevel(17);
         tMap.addView(tMapView);
-
 
         tMapView.setLocationPoint(longitude, latitude);
         tMapView.setCenterPoint(longitude, latitude);
@@ -348,15 +365,18 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
         };
 
         final LocationManager lm = (LocationManager) getActivity().getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+
         if (ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(container.getContext(), "잠시만 기다려주세요.", Toast.LENGTH_SHORT).show();
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
+
         lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
                 1000,
                 1,
                 mLocationListener);
+
         return root;
     }
 
@@ -440,6 +460,8 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
             searchElementLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    getFavorite();
+
                     compassMode = 1;
                     tMapView.setTrackingMode(false);
                     mInputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
@@ -483,14 +505,6 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
                         }
                     });
                     searchSelectedLayout.setVisibility(View.VISIBLE);
-//                    getActivity().runOnUiThread((new Runnable() {
-//
-//                        @Override
-//                        public void run() {
-//
-//                        }
-//                    }));
-
                 }
             });
 
@@ -673,16 +687,15 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
                     double curNavDistance = 0;
                     try {
                         curNavDistance = distance(latitude, longitude, Double.parseDouble(navPaths.get(index).getLatitude()), Double.parseDouble(navPaths.get(index).getLongitude())) * 1000;
-                        if (curNavDistance < 2){
+                        if (curNavDistance < 2) {
                             index += 2;
                         }
                         Log.e("navigation", "목적지 까지 남은 거리: " + (int) curNavDistance + " 현재 방향: " + navPaths.get(index).getTurnType());
                         Log.e("navigation", "다음 방향: " + navPaths.get(index + 2).getTurnType());
                         //add for watch Connection
-                        try{
-                            mMessageConsumer.sendData("nav/"+Integer.toString((int)curNavDistance)+"m/"+navPaths.get(index + 2).getTurnType());
-                        }
-                        catch (Exception e){
+                        try {
+                            mMessageConsumer.sendData("nav/" + Integer.toString((int) curNavDistance) + "m/" + navPaths.get(index + 2).getTurnType());
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
 
@@ -737,7 +750,6 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
         }
     };
 
-
     //add for watch Connection
     private void initConnection() {
         Log.e("연결연결1", "연결연결1");
@@ -761,4 +773,70 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
             }
         }.start();
     }
+
+    public void setFavorite() {
+        Map<String, Object> data = new HashMap<>();
+        data.put("email", email);
+        data.put("searchName", selectedName);
+        data.put("businessName", selectedBizName);
+        data.put("address", selectedAddress);
+        data.put("latitude", String.valueOf(destinationLatitude));
+        data.put("longitude", String.valueOf(destinationLongitude));
+
+        db.collection("FAVORITE").document(email + selectedName)
+                .set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                getFavorite();
+
+                if (isFavorite) {
+                    deleteFavorite();
+                } else {
+                    Toast.makeText(getContext(), "즐겨찾기에 추가됐습니다.", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull @NotNull Exception e) {
+                Toast.makeText(getContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void getFavorite() {
+        db.collection("FAVORITE").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                        if (documentSnapshot.get("email").toString().equals(email) && documentSnapshot.get("searchName").equals(selectedName)) {
+                            ivFavorite.setImageResource(R.drawable.ic_favorite_select);
+                            isFavorite = true;
+                        } else {
+                            ivFavorite.setImageResource(R.drawable.ic_favorite_unselect);
+                            isFavorite = false;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    public void deleteFavorite() {
+        db.collection("FAVORITE").document(email + selectedName)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(getContext(), "즐겨찾기가 히제됐습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                    }
+                });
+    }
+
 }

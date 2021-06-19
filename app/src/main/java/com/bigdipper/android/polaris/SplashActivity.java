@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.bigdipper.android.polaris.ui.NavigationActivity;
 import com.bigdipper.android.polaris.ui.membership.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 

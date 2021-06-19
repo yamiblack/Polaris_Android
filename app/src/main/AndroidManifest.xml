@@ -22,6 +22,8 @@
         android:theme="@style/Theme.Polaris">
 
         <activity android:name=".MainActivity" />
+        <activity android:name=".ui.NavigationActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity android:name=".ui.membership.LoginActivity" />
         <activity android:name=".ui.membership.SignupActivity" />
         <activity android:name=".ui.mypage.VibrationPatternActivity" />
@@ -35,8 +37,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!--        for Tizem-->
+        <!-- for Tizen -->
 
         <!-- Receiver must be declared when using SAMessage -->
         <receiver android:name="com.samsung.android.sdk.accessory.MessageReceiver">
