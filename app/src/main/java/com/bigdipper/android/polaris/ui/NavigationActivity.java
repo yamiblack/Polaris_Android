@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
@@ -29,6 +31,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.samsung.android.sdk.accessory.SAAgentV2;
 import com.skt.Tmap.TMapData;
 import com.skt.Tmap.TMapGpsManager;
+import com.skt.Tmap.TMapMarkerItem;
 import com.skt.Tmap.TMapPoint;
 import com.skt.Tmap.TMapPolyLine;
 import com.skt.Tmap.TMapView;
@@ -58,6 +61,7 @@ public class NavigationActivity extends AppCompatActivity implements TMapGpsMana
     private NodeList nodeListPlacemark; // placemark data from kml
     private List<NavPath> navPaths;
     private Intent intent;
+    private String destinationName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,21 +123,30 @@ public class NavigationActivity extends AppCompatActivity implements TMapGpsMana
                 mLocationListener);
 
         intent = getIntent();
+        destinationName = intent.getStringExtra("destName");
         latitude = Double.parseDouble(intent.getStringExtra("lati"));
         longitude = Double.parseDouble(intent.getStringExtra("long"));
         destinationLatitude = Double.parseDouble(intent.getStringExtra("destLati"));
         destinationLongitude = Double.parseDouble(intent.getStringExtra("destLong"));
 
+        TMapMarkerItem markerItem = new TMapMarkerItem();
+        TMapPoint tMapPoint1 = new TMapPoint(destinationLatitude, destinationLongitude);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.navi_search_result_marker);
+
+        markerItem.setIcon(bitmap); // 마커 아이콘 지정
+        markerItem.setCanShowCallout(true);
+        markerItem.setCalloutTitle(destinationName);
+        markerItem.setPosition(0.5f, 1.0f); // 마커의 중심점을 중앙, 하단으로 설정
+        markerItem.setTMapPoint(tMapPoint1); // 마커의 좌표 지정
+        markerItem.setName(destinationName); // 마커의 타이틀 지정
+        tMapView.addMarkerItem("markerItem1", markerItem); // 지도에 마커 추가
+
         Log.e("lat", String.valueOf(latitude));
         Log.e("long", String.valueOf(longitude));
         Log.e("destLat", String.valueOf(destinationLatitude));
         Log.e("destLon", String.valueOf(destinationLongitude));
-        new Thread() {
-            @Override
-            public void run() {
-                getPathDataXML();
-            }
-        }.start();
+
+        getPathDataXML();
     }
 
     @Override
@@ -142,7 +155,6 @@ public class NavigationActivity extends AppCompatActivity implements TMapGpsMana
         tMapView.setCenterPoint(location.getLongitude(), location.getLatitude());
     }
 
-    //change for drawPoly by kim
     private void drawPoly() {
         new Thread() {
             @Override
@@ -202,7 +214,7 @@ public class NavigationActivity extends AppCompatActivity implements TMapGpsMana
                         public void onFindPathDataAll(Document document) {
                             Element root = document.getDocumentElement();
                             nodeListPlacemark = root.getElementsByTagName("Placemark");  //get placemarks in kml
-                            Log.e("getPAthDataXML", "호출됨");
+                            Log.e("getPathDataXML", "호출됨");
                         }
                     });
                 } catch (Exception e) {
@@ -228,8 +240,6 @@ public class NavigationActivity extends AppCompatActivity implements TMapGpsMana
                 NodeList nodeListPlacemarkItem = nodeListPlacemark.item(i).getChildNodes();
                 String index = null, pathLongitude = null, pathLatitude = null, turntype = null;
                 for (int j = 0; j < nodeListPlacemarkItem.getLength(); j++) {
-
-//                    Log.e("datas", ""+nodeListPlacemarkItem.item(j).getNodeName().trim() + " "+nodeListPlacemarkItem.item(j).getTextContent().trim());
 
                     if (nodeListPlacemarkItem.item(j).getNodeName().equals("tmap:index")) {
                         index = nodeListPlacemarkItem.item(j).getTextContent().trim();

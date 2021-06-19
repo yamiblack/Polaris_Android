@@ -266,11 +266,11 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), NavigationActivity.class);
-
                 intent.putExtra("destLati", String.valueOf(destinationLatitude));
                 intent.putExtra("destLong", String.valueOf(destinationLongitude));
                 intent.putExtra("lati", String.valueOf(latitude));
                 intent.putExtra("long", String.valueOf(longitude));
+                intent.putExtra("destName", destinationName);
                 startActivity(intent);
 //                new Thread() {
 //                    @Override
@@ -278,7 +278,6 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
 //                        getPathDataXML();
 //                    }
 //                }.start();
-
             }
         });
 
