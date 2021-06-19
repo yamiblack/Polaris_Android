@@ -1,12 +1,21 @@
 package com.bigdipper.android.polaris.entity;
 
 public class Favorite {
+    String number;
     private String email;
     private String searchName;
     private String businessName;
     private String address;
     private String latitude;
     private String longitude;
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
 
     public String getEmail() {
         return email;

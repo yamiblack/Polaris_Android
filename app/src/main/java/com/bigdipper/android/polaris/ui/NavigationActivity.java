@@ -89,6 +89,7 @@ public class NavigationActivity extends AppCompatActivity implements TMapGpsMana
         tMapView.setCenterPoint(longitude, latitude);
 
         tMapData = new TMapData();
+        drawPolyList = new ArrayList<>();
 
         final LocationListener mLocationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
@@ -124,22 +125,20 @@ public class NavigationActivity extends AppCompatActivity implements TMapGpsMana
 
         intent = getIntent();
         destinationName = intent.getStringExtra("destName");
-        latitude = Double.parseDouble(intent.getStringExtra("lati"));
-        longitude = Double.parseDouble(intent.getStringExtra("long"));
         destinationLatitude = Double.parseDouble(intent.getStringExtra("destLati"));
         destinationLongitude = Double.parseDouble(intent.getStringExtra("destLong"));
 
         TMapMarkerItem markerItem = new TMapMarkerItem();
-        TMapPoint tMapPoint1 = new TMapPoint(destinationLatitude, destinationLongitude);
+        TMapPoint tMapPoint = new TMapPoint(destinationLatitude, destinationLongitude);
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.navi_search_result_marker);
 
-        markerItem.setIcon(bitmap); // 마커 아이콘 지정
+        markerItem.setIcon(bitmap);
         markerItem.setCanShowCallout(true);
         markerItem.setCalloutTitle(destinationName);
-        markerItem.setPosition(0.5f, 1.0f); // 마커의 중심점을 중앙, 하단으로 설정
-        markerItem.setTMapPoint(tMapPoint1); // 마커의 좌표 지정
-        markerItem.setName(destinationName); // 마커의 타이틀 지정
-        tMapView.addMarkerItem("markerItem1", markerItem); // 지도에 마커 추가
+        markerItem.setPosition(0.5f, 1.0f);
+        markerItem.setTMapPoint(tMapPoint);
+        markerItem.setName(destinationName);
+        tMapView.addMarkerItem("markerItem", markerItem);
 
         Log.e("lat", String.valueOf(latitude));
         Log.e("long", String.valueOf(longitude));
@@ -191,17 +190,15 @@ public class NavigationActivity extends AppCompatActivity implements TMapGpsMana
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
                     super.run();
                 }
             }
         }.start();
     }
 
-    //add for find path
-    //if choose poi -> call this
     private void getPathDataXML() {
         TMapPoint endPoint = new TMapPoint(destinationLatitude, destinationLongitude);
+        drawPolyList.clear();
         drawPathCount = 0;
         drawPoly();
 
@@ -294,6 +291,10 @@ public class NavigationActivity extends AppCompatActivity implements TMapGpsMana
                     try {
                         curNavDistance = distance(latitude, longitude, Double.parseDouble(navPaths.get(index).getLatitude()), Double.parseDouble(navPaths.get(index).getLongitude())) * 1000;
                         if (curNavDistance < 2) {
+                            if(navPaths.get(index+2).getTurnType().equals("201")){
+                                Toast.makeText(NavigationActivity.this, "안내종료", Toast.LENGTH_SHORT).show();
+                                break;
+                            }
                             index += 2;
                         }
                         Log.e("navigation", "목적지 까지 남은 거리: " + (int) curNavDistance + " 현재 방향: " + navPaths.get(index).getTurnType());

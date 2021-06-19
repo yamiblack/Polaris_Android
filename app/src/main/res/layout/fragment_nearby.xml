@@ -32,7 +32,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center">
 
             <TextView
                 android:id="@+id/t_search_selected_name"
@@ -40,12 +41,14 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@color/colorPrimary"
+                android:fontFamily="@font/nanumsquareregular"
                 android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/t_search_selected_bizname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/nanumsquareregular"
                 android:layout_weight="1" />
 
         </LinearLayout>
@@ -53,13 +56,15 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center">
 
             <TextView
                 android:id="@+id/t_search_selected_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:fontFamily="@font/nanumsquareregular"
                 android:textColor="@android:color/black"
                 android:textSize="21sp" />
 
@@ -68,6 +73,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
                 android:src="@drawable/ic_favorite_unselect" />
 
 
@@ -83,6 +89,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/button_blue_small_rounded"
+                android:fontFamily="@font/nanumsquarebold"
                 android:layout_marginEnd="10dp"
                 android:text="길 안내 시작" />
 
@@ -124,6 +133,7 @@
 
             <TextView
                 android:id="@+id/tv_show_path"
+                android:fontFamily="@font/nanumsquareregular"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
@@ -152,6 +162,7 @@
 
         <EditText
             android:id="@+id/et_search"
+            android:fontFamily="@font/nanumsquareregular"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

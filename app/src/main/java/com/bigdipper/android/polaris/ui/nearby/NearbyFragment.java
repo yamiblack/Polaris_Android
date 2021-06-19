@@ -265,19 +265,17 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
         startNaviBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), NavigationActivity.class);
-                intent.putExtra("destLati", String.valueOf(destinationLatitude));
-                intent.putExtra("destLong", String.valueOf(destinationLongitude));
-                intent.putExtra("lati", String.valueOf(latitude));
-                intent.putExtra("long", String.valueOf(longitude));
-                intent.putExtra("destName", destinationName);
-                startActivity(intent);
-//                new Thread() {
-//                    @Override
-//                    public void run() {
-//                        getPathDataXML();
-//                    }
-//                }.start();
+//                Intent intent = new Intent(getContext(), NavigationActivity.class);
+//                intent.putExtra("destLati", String.valueOf(destinationLatitude));
+//                intent.putExtra("destLong", String.valueOf(destinationLongitude));
+//                intent.putExtra("destName", destinationName);
+//                startActivity(intent);
+                new Thread() {
+                    @Override
+                    public void run() {
+                        getPathDataXML();
+                    }
+                }.start();
             }
         });
 
@@ -687,6 +685,10 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
                     try {
                         curNavDistance = distance(latitude, longitude, Double.parseDouble(navPaths.get(index).getLatitude()), Double.parseDouble(navPaths.get(index).getLongitude())) * 1000;
                         if (curNavDistance < 2) {
+                            if (navPaths.get(index + 2).getTurnType().equals("201")) {
+                                Toast.makeText(getContext(), "안내종료", Toast.LENGTH_SHORT).show();
+                                break;
+                            }
                             index += 2;
                         }
                         Log.e("navigation", "목적지 까지 남은 거리: " + (int) curNavDistance + " 현재 방향: " + navPaths.get(index).getTurnType());
@@ -828,7 +830,7 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(getContext(), "즐겨찾기가 히제됐습니다.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "즐겨찾기가 해제됐습니다.", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
