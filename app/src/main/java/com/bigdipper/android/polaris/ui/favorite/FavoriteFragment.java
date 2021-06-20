@@ -2,9 +2,7 @@ package com.bigdipper.android.polaris.ui.favorite;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -17,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bigdipper.android.polaris.R;
 import com.bigdipper.android.polaris.adapter.FavoriteRecyclerViewAdapter;
 import com.bigdipper.android.polaris.adapter.ItemClickSupport;
-import com.bigdipper.android.polaris.entity.Favorite;
+import com.bigdipper.android.polaris.entity.FavoriteData;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,14 +23,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class FavoriteFragment extends Fragment {
 
-    private ArrayList<Favorite> arrayList;
+    private ArrayList<FavoriteData> arrayList;
     private RecyclerView rvFavorite;
     private FavoriteRecyclerViewAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -115,7 +110,7 @@ public class FavoriteFragment extends Fragment {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                         if (documentSnapshot.get("email").toString().equals(email)) {
-                            Favorite favorite = documentSnapshot.toObject(Favorite.class);
+                            FavoriteData favorite = documentSnapshot.toObject(FavoriteData.class);
                             arrayList.add(favorite);
                         }
                     }

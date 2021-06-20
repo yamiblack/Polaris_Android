@@ -13,21 +13,16 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
+import com.bigdipper.android.polaris.MainActivity;
 import com.bigdipper.android.polaris.MessageConsumer;
 import com.bigdipper.android.polaris.R;
-import com.bigdipper.android.polaris.entity.NavPath;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.bigdipper.android.polaris.entity.NavPathData;
 import com.samsung.android.sdk.accessory.SAAgentV2;
 import com.skt.Tmap.TMapData;
 import com.skt.Tmap.TMapGpsManager;
@@ -59,7 +54,7 @@ public class NavigationActivity extends AppCompatActivity implements TMapGpsMana
     private int drawPathCount = 0;
     private static double destinationLatitude, destinationLongitude;
     private NodeList nodeListPlacemark; // placemark data from kml
-    private List<NavPath> navPaths;
+    private List<NavPathData> navPathData;
     private Intent intent;
     private String destinationName;
 
@@ -154,6 +149,14 @@ public class NavigationActivity extends AppCompatActivity implements TMapGpsMana
         tMapView.setCenterPoint(location.getLongitude(), location.getLatitude());
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+
+    }
+
     private void drawPoly() {
         new Thread() {
             @Override
@@ -229,9 +232,9 @@ public class NavigationActivity extends AppCompatActivity implements TMapGpsMana
         }.start();
     }
 
-    //add for find path
+    // add for find path
     private void navigatePath() {
-        navPaths = new ArrayList<>();
+        navPathData = new ArrayList<>();
         try {
             for (int i = 0; i < nodeListPlacemark.getLength(); i++) {
                 NodeList nodeListPlacemarkItem = nodeListPlacemark.item(i).getChildNodes();
@@ -244,7 +247,7 @@ public class NavigationActivity extends AppCompatActivity implements TMapGpsMana
                     if (nodeListPlacemarkItem.item(j).getNodeName().equals("LineString")) {
                         String tmp = nodeListPlacemarkItem.item(j).getTextContent().trim();
                         int findSpace = tmp.indexOf(' ');
-                        if (findSpace == -1) { //1개만 존재
+                        if (findSpace == -1) { // 1개만 존재
                             int findComma = tmp.indexOf(',');
                             pathLongitude = tmp.substring(0, findComma);
                             pathLatitude = tmp.substring(findComma + 1);
@@ -258,7 +261,7 @@ public class NavigationActivity extends AppCompatActivity implements TMapGpsMana
                     if (nodeListPlacemarkItem.item(j).getNodeName().equals("Point")) {
                         String tmp = nodeListPlacemarkItem.item(j).getTextContent().trim();
                         int findSpace = tmp.indexOf(' ');
-                        if (findSpace == -1) { //1개만 존재
+                        if (findSpace == -1) { // 1개만 존재
                             int findComma = tmp.indexOf(',');
                             pathLongitude = tmp.substring(0, findComma);
                             pathLatitude = tmp.substring(findComma + 1);
@@ -275,7 +278,7 @@ public class NavigationActivity extends AppCompatActivity implements TMapGpsMana
                 }
                 Log.e("navPathData", "index " + index + "  lat " + pathLatitude + " lon " + pathLongitude + " turn " + turntype);
 
-                navPaths.add(new NavPath(index, pathLatitude, pathLongitude, turntype));
+                navPathData.add(new NavPathData(index, pathLatitude, pathLongitude, turntype));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -284,24 +287,24 @@ public class NavigationActivity extends AppCompatActivity implements TMapGpsMana
             @Override
             public void run() {
                 int index = 0;
-                Log.e("nvaleng", "" + navPaths.size());
-                while (index + 2 < navPaths.size()) {
+                Log.e("nvaleng", "" + navPathData.size());
+                while (index + 2 < navPathData.size()) {
                     TMapPoint curPoint = new TMapPoint(latitude, longitude);
                     double curNavDistance = 0;
                     try {
-                        curNavDistance = distance(latitude, longitude, Double.parseDouble(navPaths.get(index).getLatitude()), Double.parseDouble(navPaths.get(index).getLongitude())) * 1000;
+                        curNavDistance = distance(latitude, longitude, Double.parseDouble(navPathData.get(index).getLatitude()), Double.parseDouble(navPathData.get(index).getLongitude())) * 1000;
                         if (curNavDistance < 2) {
-                            if(navPaths.get(index+2).getTurnType().equals("201")){
+                            if(navPathData.get(index+2).getTurnType().equals("201")){
                                 Toast.makeText(NavigationActivity.this, "안내종료", Toast.LENGTH_SHORT).show();
                                 break;
                             }
                             index += 2;
                         }
-                        Log.e("navigation", "목적지 까지 남은 거리: " + (int) curNavDistance + " 현재 방향: " + navPaths.get(index).getTurnType());
-                        Log.e("navigation", "다음 방향: " + navPaths.get(index + 2).getTurnType());
+                        Log.e("navigation", "목적지 까지 남은 거리: " + (int) curNavDistance + " 현재 방향: " + navPathData.get(index).getTurnType());
+                        Log.e("navigation", "다음 방향: " + navPathData.get(index + 2).getTurnType());
                         //add for watch Connection
                         try {
-                            messageConsumer.sendData("nav/" + Integer.toString((int) curNavDistance) + "m/" + navPaths.get(index + 2).getTurnType());
+                            messageConsumer.sendData("nav/" + Integer.toString((int) curNavDistance) + "m/" + navPathData.get(index + 2).getTurnType());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

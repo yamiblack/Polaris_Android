@@ -1,6 +1,6 @@
 package com.bigdipper.android.polaris.entity;
 
-public class VibrationPattern {
+public class VibrationPatternData {
     private String email;
     private String straight;
     private String left;

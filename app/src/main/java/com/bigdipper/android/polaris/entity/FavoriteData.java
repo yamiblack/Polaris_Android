@@ -1,6 +1,6 @@
 package com.bigdipper.android.polaris.entity;
 
-public class Favorite {
+public class FavoriteData {
     String number;
     private String email;
     private String searchName;

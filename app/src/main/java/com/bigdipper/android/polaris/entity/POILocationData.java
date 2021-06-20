@@ -1,6 +1,6 @@
 package com.bigdipper.android.polaris.entity;
 
-public class POILocation {
+public class POILocationData {
 
     private String name; // 이름
     private double radius; // 거리
@@ -10,7 +10,7 @@ public class POILocation {
     private double latitude; // 위도
     private double longitude; // 경도
 
-    public POILocation(String name, double radius, String bizName, String address, String roadAddress, double latitude, double longitude) {
+    public POILocationData(String name, double radius, String bizName, String address, String roadAddress, double latitude, double longitude) {
         this.name = name;
         this.radius = radius;
         this.bizName = bizName;

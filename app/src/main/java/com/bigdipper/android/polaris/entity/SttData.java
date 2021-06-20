@@ -1,6 +1,6 @@
 package com.bigdipper.android.polaris.entity;
 
-public class Stt {
+public class SttData {
     private String email;
     private String word;
 

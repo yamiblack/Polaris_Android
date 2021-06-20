@@ -2,7 +2,6 @@ package com.bigdipper.android.polaris.ui.nearby;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -35,16 +34,14 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bigdipper.android.polaris.MessageConsumer;
-import com.bigdipper.android.polaris.entity.POILocation;
+import com.bigdipper.android.polaris.entity.POILocationData;
 import com.bigdipper.android.polaris.R;
-import com.bigdipper.android.polaris.entity.NavPath;
-import com.bigdipper.android.polaris.ui.NavigationActivity;
+import com.bigdipper.android.polaris.entity.NavPathData;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -114,7 +111,7 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
     private String destinationName;
     private TextView showPath;
     private NodeList nodeListPlacemark; // placemark data from kml
-    private List<NavPath> navPaths;
+    private List<NavPathData> navPathData;
 
     // Keyboard
     private InputMethodManager mInputMethodManager;
@@ -386,7 +383,7 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
     private class SearchPOI implements Runnable {
         private URL url;
         // POI
-        ArrayList<POILocation> searchResult = new ArrayList<>();
+        ArrayList<POILocationData> searchResult = new ArrayList<>();
 
         SearchPOI(URL url) {
             this.url = url;
@@ -417,8 +414,8 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
                                 double resultCenterLat = result.getJSONObject(i).getJSONObject("newAddressList").getJSONArray("newAddress").getJSONObject(0).getDouble("centerLat");
                                 double resultCenterLon = result.getJSONObject(i).getJSONObject("newAddressList").getJSONArray("newAddress").getJSONObject(0).getDouble("centerLon");
 
-                                POILocation poiLocation = new POILocation(resultName, resultRadius, resultLowerBizName, resultFullAddressRoad, resultFullAddress, resultCenterLat, resultCenterLon);
-                                searchResult.add(poiLocation);
+                                POILocationData poiLocationData = new POILocationData(resultName, resultRadius, resultLowerBizName, resultFullAddressRoad, resultFullAddress, resultCenterLat, resultCenterLon);
+                                searchResult.add(poiLocationData);
                                 if (result.length() != 0) {
                                     getActivity().runOnUiThread((new Runnable() {
                                         @Override
@@ -443,7 +440,7 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
         }
     }
 
-    private void showSearchResult(ArrayList<POILocation> searchResult, int size) {
+    private void showSearchResult(ArrayList<POILocationData> searchResult, int size) {
 
         for (int i = 0; i < size; i++) {
             LinearLayout searchElementLayout = new LinearLayout(getContext());
@@ -623,7 +620,7 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
 
     //add for find path
     private void navigatePath() {
-        navPaths = new ArrayList<>();
+        navPathData = new ArrayList<>();
         try {
             for (int i = 0; i < nodeListPlacemark.getLength(); i++) {
                 NodeList nodeListPlacemarkItem = nodeListPlacemark.item(i).getChildNodes();
@@ -669,7 +666,7 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
                 }
                 Log.e("navPathData", "index " + index + "  lat " + pathLatitude + " lon " + pathLongitude + " turn " + turntype);
 
-                navPaths.add(new NavPath(index, pathLatitude, pathLongitude, turntype));
+                navPathData.add(new NavPathData(index, pathLatitude, pathLongitude, turntype));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -678,24 +675,24 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
             @Override
             public void run() {
                 int index = 0;
-                Log.e("nvaleng", "" + navPaths.size());
-                while (index + 2 < navPaths.size()) {
+                Log.e("nvaleng", "" + navPathData.size());
+                while (index + 2 < navPathData.size()) {
                     TMapPoint curPoint = new TMapPoint(latitude, longitude);
                     double curNavDistance = 0;
                     try {
-                        curNavDistance = distance(latitude, longitude, Double.parseDouble(navPaths.get(index).getLatitude()), Double.parseDouble(navPaths.get(index).getLongitude())) * 1000;
+                        curNavDistance = distance(latitude, longitude, Double.parseDouble(navPathData.get(index).getLatitude()), Double.parseDouble(navPathData.get(index).getLongitude())) * 1000;
                         if (curNavDistance < 2) {
-                            if (navPaths.get(index + 2).getTurnType().equals("201")) {
+                            if (navPathData.get(index + 2).getTurnType().equals("201")) {
                                 Toast.makeText(getContext(), "안내종료", Toast.LENGTH_SHORT).show();
                                 break;
                             }
                             index += 2;
                         }
-                        Log.e("navigation", "목적지 까지 남은 거리: " + (int) curNavDistance + " 현재 방향: " + navPaths.get(index).getTurnType());
-                        Log.e("navigation", "다음 방향: " + navPaths.get(index + 2).getTurnType());
+                        Log.e("navigation", "목적지 까지 남은 거리: " + (int) curNavDistance + " 현재 방향: " + navPathData.get(index).getTurnType());
+                        Log.e("navigation", "다음 방향: " + navPathData.get(index + 2).getTurnType());
                         //add for watch Connection
                         try {
-                            mMessageConsumer.sendData("nav/" + Integer.toString((int) curNavDistance) + "m/" + navPaths.get(index + 2).getTurnType());
+                            mMessageConsumer.sendData("nav/" + Integer.toString((int) curNavDistance) + "m/" + navPathData.get(index + 2).getTurnType());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

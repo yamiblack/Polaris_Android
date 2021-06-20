@@ -1,7 +1,7 @@
 package com.bigdipper.android.polaris.adapter;
 
 import android.content.Context;
-import android.text.TextUtils;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,15 +13,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bigdipper.android.polaris.R;
-import com.bigdipper.android.polaris.entity.Favorite;
+import com.bigdipper.android.polaris.entity.FavoriteData;
+import com.bigdipper.android.polaris.ui.NavigationActivity;
 
 import java.util.ArrayList;
 
 public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRecyclerViewAdapter.ViewHolder> {
     Context context;
-    ArrayList<Favorite> items;
+    ArrayList<FavoriteData> items;
 
-    public FavoriteRecyclerViewAdapter(Context context, ArrayList<Favorite> items) {
+    public FavoriteRecyclerViewAdapter(Context context, ArrayList<FavoriteData> items) {
         this.context = context;
         this.items = items;
     }
@@ -35,7 +36,7 @@ public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRe
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Favorite favorite = items.get(position);
+        FavoriteData favorite = items.get(position);
 
         try {
             holder.tvNumber.setText(favorite.getNumber());
@@ -44,6 +45,17 @@ public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRe
 
             holder.tvName.setSelected(true);
             holder.tvAddress.setSelected(true);
+
+            holder.btnStartNavigation.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(view.getContext(), NavigationActivity.class);
+                    intent.putExtra("destLati", items.get(position).getLatitude());
+                    intent.putExtra("destLong", items.get(position).getLongitude());
+                    intent.putExtra("destName", items.get(position).getSearchName());
+                    context.startActivity(intent);
+                }
+            });
 
         } catch (NullPointerException e) {
             Log.e("error ", e.getMessage());
@@ -71,9 +83,7 @@ public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRe
         }
     }
 
-
-
-    public Favorite getItem(int position) {
+    public FavoriteData getItem(int position) {
         return items.get(position);
     }
 }
