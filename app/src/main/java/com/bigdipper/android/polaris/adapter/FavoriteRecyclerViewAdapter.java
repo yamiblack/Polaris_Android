@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -58,6 +59,7 @@ public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRe
         TextView tvNumber;
         TextView tvName;
         TextView tvAddress;
+        Button btnStartNavigation;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -65,8 +67,11 @@ public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRe
             tvNumber = itemView.findViewById(R.id.tv_favorite_number);
             tvName = itemView.findViewById(R.id.tv_favorite_name);
             tvAddress = itemView.findViewById(R.id.tv_favorite_address);
+            btnStartNavigation = itemView.findViewById(R.id.btn_favorite_start);
         }
     }
+
+
 
     public Favorite getItem(int position) {
         return items.get(position);
