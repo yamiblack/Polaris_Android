@@ -67,7 +67,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -262,11 +264,7 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
         startNaviBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(getContext(), NavigationActivity.class);
-//                intent.putExtra("destLati", String.valueOf(destinationLatitude));
-//                intent.putExtra("destLong", String.valueOf(destinationLongitude));
-//                intent.putExtra("destName", destinationName);
-//                startActivity(intent);
+                setRecent();
                 new Thread() {
                     @Override
                     public void run() {
@@ -298,7 +296,9 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
                 cancelBtn.setVisibility(View.VISIBLE);
                 String searchKeyword = s.toString();
                 try {
-                    URL searchUrl = new URL("https://apis.openapi.sk.com/tmap/pois?appKey=" + API_Key + "&version=1&searchKeyword=" + searchKeyword + "&searchtypCd=R&radius=0&centerLon=" + longitude + "&centerLat=" + latitude);
+                    URL searchUrl = new URL("https://apis.openapi.sk.com/tmap/pois?appKey=" + API_Key
+                            + "&version=1&searchKeyword=" + searchKeyword + "&searchtypCd=R&radius=0&centerLon="
+                            + longitude + "&centerLat=" + latitude);
                     Runnable search = new SearchPOI(searchUrl);
                     Thread searchThread = new Thread(search);
                     searchThread.start();
@@ -627,8 +627,6 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
                 String index = null, pathLongitude = null, pathLatitude = null, turntype = null;
                 for (int j = 0; j < nodeListPlacemarkItem.getLength(); j++) {
 
-//                    Log.e("datas", ""+nodeListPlacemarkItem.item(j).getNodeName().trim() + " "+nodeListPlacemarkItem.item(j).getTextContent().trim());
-
                     if (nodeListPlacemarkItem.item(j).getNodeName().equals("tmap:index")) {
                         index = nodeListPlacemarkItem.item(j).getTextContent().trim();
                     }
@@ -734,6 +732,11 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
 
     }
 
+    public static String getToday() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd");
+        return simpleDateFormat.format(new Date());
+    }
+
 
     //add for watch Connection
     private SAAgentV2.RequestAgentCallback mAgentCallback2 = new SAAgentV2.RequestAgentCallback() {
@@ -835,6 +838,30 @@ public class NearbyFragment extends Fragment implements TMapGpsManager.onLocatio
                     public void onFailure(@NonNull Exception e) {
                     }
                 });
+    }
+
+    public void setRecent() {
+        Map<String, Object> data = new HashMap<>();
+        data.put("email", email);
+        data.put("searchName", selectedName);
+        data.put("businessName", selectedBizName);
+        data.put("address", selectedAddress);
+        data.put("latitude", String.valueOf(destinationLatitude));
+        data.put("longitude", String.valueOf(destinationLongitude));
+        data.put("todayDate", getToday());
+        data.put("currentTime", System.currentTimeMillis());
+
+
+        db.collection("RECENT").document(email + System.currentTimeMillis())
+                .set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull @NotNull Exception e) {
+            }
+        });
     }
 
 }

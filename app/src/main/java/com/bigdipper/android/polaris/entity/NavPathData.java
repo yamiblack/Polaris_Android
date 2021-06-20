@@ -7,7 +7,7 @@ public class NavPathData {
     private String longitude;
     private String turnType;
 
-    public NavPathData(String index, String latitude, String longitude, String turnType){
+    public NavPathData(String index, String latitude, String longitude, String turnType) {
         this.index = index;
         this.latitude = latitude;
         this.longitude = longitude;

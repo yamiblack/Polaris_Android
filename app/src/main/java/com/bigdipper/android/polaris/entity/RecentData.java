@@ -8,6 +8,7 @@ public class RecentData implements Comparable<RecentData> {
     private String address;
     private String latitude;
     private String longitude;
+    private String todayDate;
     private long currentTime;
 
     public String getNumber() {
@@ -64,6 +65,14 @@ public class RecentData implements Comparable<RecentData> {
 
     public void setLongitude(String longitude) {
         this.longitude = longitude;
+    }
+
+    public String getTodayDate() {
+        return todayDate;
+    }
+
+    public void setTodayDate(String todayDate) {
+        this.todayDate = todayDate;
     }
 
     public long getCurrentTime() {

@@ -36,63 +36,17 @@ public class FavoriteFragment extends Fragment {
     private FirebaseAuth auth;
     private String email;
 
-//    private GestureDetector gestureDetector;
-    private Button btnStartNavigation;
-    private static String longitude, latitude;
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_favorite, container, false);
 
         rvFavorite = (RecyclerView) root.findViewById(R.id.rv_favorite);
-        btnStartNavigation = (Button) root.findViewById(R.id.btn_favorite_start);
-
-        ItemClickSupport.addTo(rvFavorite).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
-            @Override
-            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                Log.e("aiodjfoiajdfioj", arrayList.get(position).getLatitude());
-            }
-        });
 
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         email = auth.getCurrentUser().getEmail();
 
-//        gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
-//            @Override
-//            public boolean onSingleTapUp(MotionEvent e) {
-//                return true;
-//            }
-//        });
-//
-//        rvFavorite.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-//            @Override
-//            public boolean onInterceptTouchEvent(@NonNull @NotNull RecyclerView rv, @NonNull @NotNull MotionEvent e) {
-//                View childView = rv.findChildViewUnder(e.getX(), e.getY());
-//
-//                if(childView != null && gestureDetector.onTouchEvent(e)) {
-//                    int currentPosition = rv.getChildAdapterPosition(childView);
-//
-//
-//                }
-//                return false;
-//            }
-//
-//            @Override
-//            public void onTouchEvent(@NonNull @NotNull RecyclerView rv, @NonNull @NotNull MotionEvent e) {
-//                View child = rv.findChildViewUnder(e.getX(), e.getY());
-//                int position = rv.getChildAdapterPosition(child);
-//            }
-//
-//            @Override
-//            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-//
-//            }
-//        });
-
         getFavorite();
-
-        Log.e("location", latitude + " " + longitude);
 
         return root;
     }
