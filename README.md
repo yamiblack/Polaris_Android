@@ -45,10 +45,14 @@
 - 영상에서는 확인이 어렵지만, 초반에 좌회전할 때 설정한 횟수만큼 진동을 확인할 수 있었다. 
 - 시간 관계상 영상을 배속으로 편집했다.
 
+</br>
+
 ### 2. 위험 감지
 [![Video Label](https://user-images.githubusercontent.com/50551349/126074507-b6488890-9031-4a90-909c-7175a8496cfd.png)](https://youtu.be/anOrdAAKtKU)
 - 주변의 위험을 인지하지 못할 경우의 위험(개발 배경2) 개선했다. 
 - 위 영상과 같이 큰 소리가 감지되면 스마트워치는 진동으로 안내한다.
+
+</br>
 
 ### 3. STT
 [![Video Label](https://user-images.githubusercontent.com/50551349/126074509-bebef2a4-9f0c-40a0-bd1b-10440e24a46e.png)](https://youtu.be/afRJe0G7AcE)
