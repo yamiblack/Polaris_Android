@@ -42,7 +42,7 @@
 [![Video Label](https://user-images.githubusercontent.com/50551349/126074311-e9312869-0cac-420b-b8ec-8483c46a782a.png)](https://youtu.be/Hw5rmQwl3-E)
 - 행 중 스마트폰을 사용할 경우의 위험(개발 배경1) 개선했다.
 - GS25 편의점으로 목적지를 설정하면 스마트워치에서 이를 안내하여 목적지에 도착하는 것을 위 영상을 통해 확인할 수 있다. 
-- 영상에서는 표현이 부족했지만, 초반에 좌회전할 때 설정한 진동의 횟수가 작동했다. 
+- 영상에서는 확인이 어렵지만, 초반에 좌회전할 때 설정한 횟수만큼 진동을 확인할 수 있었다. 
 - 시간 관계상 영상을 배속으로 편집했다.
 
 ### 2. 위험 감지
@@ -59,7 +59,94 @@
 </br>
 
 ## 상세 기능 소개
+### 1. Firebase 활용 회원가입 및 로그인
 
+<p align="center"> 
+ <img src="https://user-images.githubusercontent.com/50551349/126077361-931dfe28-95eb-4568-855e-363ae9001c48.jpg" width="300"/>
+ <img src="https://user-images.githubusercontent.com/50551349/126077362-974f9c61-5ec1-4b62-adf3-5f5ee89d1bb8.jpg" width="300"/> 
+</p>
+
+- Firebase 활용 회원가입 및 로그인 화면은 위 그림과 같다.
+
+<p align="center"> 
+ <img src="https://user-images.githubusercontent.com/50551349/126077415-b03cb8d8-1d2c-415b-b2ef-ecf32ce646bf.jpg" width="300"/>
+ <img src="https://user-images.githubusercontent.com/50551349/126077418-2cab4b1f-53fb-49d6-a807-0755a84451cd.jpg" width="300"/> 
+</p>
+ 
+- 좌측은 회원가입 성공화면을, 우측은 로그인 성공 화면을 나타낸다.
+
+</br>
+
+### 2. 주변 지도 표시 및 검색
+
+<p align="center"> 
+ <img src="https://user-images.githubusercontent.com/50551349/126077442-c2a65f63-9e67-4a8a-9ec8-d243af0c6e8c.png" width="300"/>
+ <img src="https://user-images.githubusercontent.com/50551349/126077446-21ea7808-aa53-4a84-90b1-700f361f2341.png" width="300"/> 
+</p>
+
+- 좌측은 현재 위치를 기반한 주변 지도를 나타낸다.
+- 우측은 검색창에서 목적지를 검색할 때의 검색 화면을 나타낸다.
+
+</br>
+
+### 3. 경로 탐색 및 내비게이션
+
+<p align="center"> 
+ <img src="https://user-images.githubusercontent.com/50551349/126077519-f9638bc5-3d23-47d6-8a06-ad150d0026c5.png" width="300"/> 
+ <img src="https://user-images.githubusercontent.com/50551349/126077584-18459647-70ea-4c1c-b251-c8080f7a719c.png" width="300"/>
+</p>
+
+- 좌측과 같이 스마트폰에서 '길 안내 시작' 버튼을 터치하면 우측과 같이 스마트워치에서 길 안내가 시작된다. 
+
+</br>
+
+### 4. 최근 검색
+
+<p align="center"> 
+ <img src="https://user-images.githubusercontent.com/50551349/126077625-f60190c1-fbec-4121-9094-2379dd6498e6.png" width="300"/>
+</p>
+
+- 위 그림과 같이 최근 검색 기록을 확인하고 '길 안내 시작' 버튼을 터치하여 바로 길 안내 서비스를 이용할 수 있다. 
+
+</br>
+
+### 5. 즐겨찾기
+
+<p align="center"> 
+ <img src="https://user-images.githubusercontent.com/50551349/126077717-eed4d3f0-4803-4b66-829d-344ee2103448.png" width="300"/>
+ <img src="https://user-images.githubusercontent.com/50551349/126077721-e43721a1-8898-452b-b094-76e712c0f79a.png" width="300"/> 
+</p>
+
+- 좌측과 같이 검색 결과에서 우측의 별 모양을 터치하면 우측과 같이 별의 색이 변하면서 즐겨찾기 목록에 등록이 된다. 
+
+<p align="center"> 
+ <img src="https://user-images.githubusercontent.com/50551349/126077795-0aaaa10e-a8ed-4378-bab8-872fcf22c8d4.png" width="300"/>
+</p>
+
+- 위 그림과 같이 즐겨찾기 목록을 확인하고 '길 안내 시작' 버튼을 터치하여 바로 길 안내 서비스를 이용할 수 있다.
+</br>
+
+
+### 6. 진동 패턴 설정
+
+<p align="center"> 
+ <img src="https://user-images.githubusercontent.com/50551349/126077831-d5be6b5d-8154-40e6-a67c-c00b0037b62c.png" width="300"/>
+ <img src="https://user-images.githubusercontent.com/50551349/126077835-52766c5c-25b6-4bb1-8cf9-d0b421c49473.png" width="300"/> 
+</p>
+
+- 위 그림과 같이 진동 패턴을 사용자별로 설정할 수 있다.
+
+</br>
+
+
+### 7. 음성인식 단어 관리
+
+<p align="center"> 
+ <img src="https://user-images.githubusercontent.com/50551349/126077884-aedb2390-054e-45da-8968-22f65bf67625.png" width="300"/>
+ <img src="https://user-images.githubusercontent.com/50551349/126077888-2fe1b2ba-4226-4c9c-b3cb-cc4a17109532.png" width="300"/> 
+</p>
+
+- 위 그림과 같이 음성인식 단어를 사용자별로 관리할 수 있다.
 
 </br>
 
@@ -74,6 +161,6 @@
 
 ## 사용 기술 스택
 - Android(Java)
-- Tizen
+- Tizen Native API
 - Samsung Accessory Protocol(SAP)
 - T map API
