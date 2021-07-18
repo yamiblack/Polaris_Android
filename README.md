@@ -7,9 +7,11 @@
   - [신영환](https://github.com/sin111011)
 </br>
 
-## 서비스 고개
+## 서비스 소개
 
 </br>
 
 ## 시연 영상
 길 안내 : https://youtu.be/Hw5rmQwl3-E
+소음 감지 : https://youtu.be/anOrdAAKtKU
+음성 인식 : https://youtu.be/afRJe0G7AcE
