@@ -12,14 +12,14 @@
 <br>
 
 ## 목차
-[1. 개발 배경](#개발-배경)    
+[1. 개발 배경](#1.-개발-배경)    
 [2. 서비스 소개](#2.-서비스-소개)  
-[3. System Architecture](#3.-system-architecture)
+[3. System Architecture](#3.-system-architecture)     
 [4. 시연 영상](#4.-시연-영상)      
 [5. 상세 기능 소개](#4.-상세-기능-소개)   
 [6. 사용 기술 스택](#5.-사용-기술-스택)    
 [7. Advanced Feature](#6.-advanced-feature)     
-[8. WBS & Gantt Chart](#7.-wbs-&-gantt-chart)     
+[8. WBS & Gantt Chart](#-7.-wbs-&-gantt-chart)     
 [9. 추후 보완 내용(예정)](#8.-추후-보완-내용(예정))      
   
 
