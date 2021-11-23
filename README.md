@@ -19,8 +19,8 @@
 [5. 상세 기능 소개](#5-상세-기능-소개)   
 [6. 사용 기술 스택](#6-사용-기술-스택)    
 [7. Advanced Feature](#7-advanced-feature)     
-[8. WBS & Gantt Chart](#8-wbs-gantt-chart)     
-[9. 추후 보완 내용(예정)](#9-추후-보완-내용예정)      
+[8. WBS 및 Gantt Chart](#8-wbs-및-gantt-chart)     
+[9. 추후 보완 내용](#9-추후-보완-내용)      
   
 
 </br>
@@ -275,7 +275,7 @@ if (messageConsumer != null) {
 
 <br>
 
-## 9. 추후 보완 내용 (예정)
+## 9. 추후 보완 내용
 - STT 기능 통합
 - iOS Version 개발 
 - Node.js 서버 구축
