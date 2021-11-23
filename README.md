@@ -268,7 +268,7 @@ if (messageConsumer != null) {
 
 <br>
 
-## 8. WBS & Gantt Chart
+## 8. WBS 및 Gantt Chart
 ![image](https://user-images.githubusercontent.com/50551349/143029101-dcebe1f8-3bfc-4fe4-a1d0-11e277a4120f.png)
 
 ![image](https://user-images.githubusercontent.com/50551349/143029130-f092ff8a-f515-4974-9692-f1af8fc8d69c.png)
