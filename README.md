@@ -12,7 +12,7 @@
 <br>
 
 ## 목차
-[1. 개발 배경](#개발-배경)    
+[1. 개발 배경](#1-개발-배경)    
 [2. 서비스 소개](#2.-서비스-소개)  
 [3. System Architecture](#3.-system-architecture)     
 [4. 시연 영상](#4.-시연-영상)      
@@ -25,7 +25,7 @@
 
 </br>
 
-## 개발 배경
+## 1. 개발 배경
 - 보행 중 스마트폰을 사용할 경우의 위험(개발 배경1)
   - [보행 중 주의분산 실태와 사고특성 분석_삼성교통안전문화연구소](http://sts.samsungfire.com/information/regulations/asn/asn_201815_09/asn_issue2.html)
   - ['스몸비, 블좀족' 보행자 위험경보](http://www.ggilbo.com/news/articleView.html?idxno=832249)
