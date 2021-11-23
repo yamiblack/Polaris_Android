@@ -18,7 +18,7 @@
 [4. 시연 영상](#4-시연-영상)      
 [5. 상세 기능 소개](#5-상세-기능-소개)   
 [6. 사용 기술 스택](#6-사용-기술-스택)    
-[7. Advanced Feature](#7-advanced-feature)     
+[7. 주요 코드](#7-주요-코드)     
 [8. WBS 및 Gantt Chart](#8-wbs-및-gantt-chart)     
 [9. 추후 보완 내용](#9-추후-보완-내용)      
   
@@ -186,7 +186,7 @@
 
 <br>
 
-## 7. Advanced Feature
+## 7. 주요 코드
 ### 7.1. SAP 연결 설정
 ```xml
 <uses-permission android:name="com.samsung.accessory.permission.ACCESSORY_FRAMEWORK" />
