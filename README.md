@@ -8,6 +8,15 @@
 - 관련 수상 : [2021년 한국정보기술학회 대학생논문경진대회 은상](https://ki-it.or.kr/%EA%B3%B5%EC%A7%80%EC%82%AC%ED%95%AD/9152015)
 <img src="https://user-images.githubusercontent.com/50551349/126074575-34adb516-cad6-49be-bd19-a9fbb47f7f25.png" width="500">
 
+> [개발 배경](#개발-배경)   
+> 서비스 소개   
+> 시연 영상   
+> 상세 기능 소개   
+> Advanced Feature   
+> WBS & Gantt Chart   
+> 추후 보완 내용(예정)   
+> 사용 기술 스택   
+
 </br>
 
 ## 개발 배경
@@ -34,6 +43,9 @@
 - 사용자는 직접 진동 패턴을 본인에게 맞춰 커스터마이징할 수 있다. 
 - 보행 중 노이즈 캔슬링과 같이 주변의 소리를 못 듣는 경우에 폭발음, 경적음, 그리고 공사장 소리와 같이 큰 소리나 위협이 되는 소리가 감지면 이를 진동을 통해 사용자에게 안내한다. 
 - 스마트워치에서 STT(Speech-to-Text) 기능을 활용하여 청각장애인의 소통 문제를 개선한다.
+- 해당 서비스의 SWOT 분석은 다음과 같다. 
+
+![image](https://user-images.githubusercontent.com/50551349/143029015-14ac1320-658e-4f96-bb48-bb108f1ca9d3.png)
 
 </br>
 
@@ -160,15 +172,94 @@
 
 </br>
 
+## Advanced Feature
+### 1. SAP 연결 설정
+```xml
+<uses-permission android:name="com.samsung.accessory.permission.ACCESSORY_FRAMEWORK" />
+<uses-permission android:name="com.samsung.wmanager.APP" />
+<uses-permission android:name="com.samsung.WATCH_APP_TYPE.Companion" />
+```
+
+```xml
+<receiver android:name="com.samsung.android.sdk.accessory.MessageReceiver">
+    <intent-filter>
+        <action android:name="com.samsung.accessory.action.MESSAGE_RECEIVED" />
+    </intent-filter>
+</receiver>
+
+<receiver android:name="com.samsung.android.sdk.accessory.RegisterUponInstallReceiver">
+    <intent-filter>
+        <action android:name="com.samsung.accessory.action.REGISTER_AGENT" />
+    </intent-filter>
+</receiver>
+<receiver android:name="com.samsung.android.sdk.accessory.ServiceConnectionIndicationBroadcastReceiver">
+    <intent-filter>
+        <action android:name="com.samsung.accessory.action.SERVICE_CONNECTION_REQUESTED" />
+    </intent-filter>
+</receiver>
+
+<service android:name="com.samsung.android.sdk.accessory.SAService" />
+
+<meta-data
+    android:name="AccessoryServicesLocation"
+    android:value="/res/xml/accessoryservices.xml" />
+```
+
+- SAP 사용을 위해서는 AndroidManifest.xml에서 위와 같이 설정해야 한다.
+
+<br> 
+
+### 2. Galaxy Watch 연결
+```java
+private void connectGalaxyWatch() {
+    SAAgentV2.requestAgent(getApplicationContext(), MessageConsumer.class.getName(), agentCallback);
+    new Thread() {
+        @Override
+        public void run() {
+            while (true) {
+                if (messageConsumer != null) {
+                    messageConsumer.findPeers();
+                    break;
+                }
+                try {
+                    Thread.sleep(3000);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                super.run();
+            }
+        }
+    }.start();
+}
+```
+
+<br>
+
+### 3. Galaxy Watch 데이터 전송
+```java
+if (messageConsumer != null) {
+    messageConsumer.sendData("guide/" + etStraight.getText().toString() + "/straight");
+    messageConsumer.sendData("guide/" + etLeft.getText().toString() + "/left");
+    messageConsumer.sendData("guide/" + etRight.getText().toString() + "/right");
+    messageConsumer.sendData("guide/" + etTwo.getText().toString() + "/two");
+    messageConsumer.sendData("guide/" + etFour.getText().toString() + "/four");
+    messageConsumer.sendData("guide/" + etEight.getText().toString() + "/eight");
+    messageConsumer.sendData("guide/" + etTen.getText().toString() + "/ten");
+
+    Toast.makeText(context, "성공적으로 설정됐습니다.", Toast.LENGTH_SHORT).show();
+} else {
+    Toast.makeText(context, "갤럭시워치 연결을 확안해주세요.", Toast.LENGTH_SHORT).show();
+}
+```
+
+<br>
+
 ## WBS & Gantt Chart
 ![image](https://user-images.githubusercontent.com/50551349/143029101-dcebe1f8-3bfc-4fe4-a1d0-11e277a4120f.png)
 
 ![image](https://user-images.githubusercontent.com/50551349/143029130-f092ff8a-f515-4974-9692-f1af8fc8d69c.png)
 
-
-## SWOT 분석 
-
-![image](https://user-images.githubusercontent.com/50551349/143029015-14ac1320-658e-4f96-bb48-bb108f1ca9d3.png)
+<br>
 
 ## 추후 보완 내용 (예정)
 - STT 기능 통합
