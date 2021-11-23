@@ -6,7 +6,7 @@
   - [김진산](https://github.com/lazybones1)
   - [신영환](https://github.com/sin111011)
 - 관련 수상 : [2021년 한국정보기술학회 대학생논문경진대회 은상](https://ki-it.or.kr/%EA%B3%B5%EC%A7%80%EC%82%AC%ED%95%AD/9152015)
-- 
+
 <img src="https://user-images.githubusercontent.com/50551349/126074575-34adb516-cad6-49be-bd19-a9fbb47f7f25.png" width="500">
 
 <br>
