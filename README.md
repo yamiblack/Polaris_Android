@@ -11,7 +11,7 @@
 
 <br>
 
-## 목차
+# 목차   
 [1. 개발 배경](#1-개발-배경)    
 [2. 서비스 소개](#2-서비스-소개)  
 [3. System Architecture](#3-system-architecture)     
