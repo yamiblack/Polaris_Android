@@ -6,20 +6,25 @@
   - [김진산](https://github.com/lazybones1)
   - [신영환](https://github.com/sin111011)
 - 관련 수상 : [2021년 한국정보기술학회 대학생논문경진대회 은상](https://ki-it.or.kr/%EA%B3%B5%EC%A7%80%EC%82%AC%ED%95%AD/9152015)
+- 
 <img src="https://user-images.githubusercontent.com/50551349/126074575-34adb516-cad6-49be-bd19-a9fbb47f7f25.png" width="500">
 
-> [개발 배경](#개발-배경)   
-> 서비스 소개   
-> 시연 영상   
-> 상세 기능 소개   
-> Advanced Feature   
-> WBS & Gantt Chart   
-> 추후 보완 내용(예정)   
-> 사용 기술 스택   
+<br>
+
+## 목차
+1. [개발 배경](#1.-개발-배경) 
+2. [서비스 소개](#2.-서비스-소개)   
+3. [시연 영상](#3.-시연-영상)   
+4. [상세 기능 소개](#4.-상세-기능-소개)
+5. [사용 기술 스택](#5.-사용-기술-스택) 
+6. [Advanced Feature](#6.-advanced-feature)  
+7. [WBS & Gantt Chart](#7.-wbs-&-gantt-chart)  
+8. [추후 보완 내용(예정)](#8.-추후-보완-내용(예정))   
+  
 
 </br>
 
-## 개발 배경
+## 1. 개발 배경
 - 보행 중 스마트폰을 사용할 경우의 위험(개발 배경1)
   - [보행 중 주의분산 실태와 사고특성 분석_삼성교통안전문화연구소](http://sts.samsungfire.com/information/regulations/asn/asn_201815_09/asn_issue2.html)
   - ['스몸비, 블좀족' 보행자 위험경보](http://www.ggilbo.com/news/articleView.html?idxno=832249)
@@ -36,7 +41,7 @@
 
 </br>
 
-## 서비스 소개
+## 2. 서비스 소개
 - 스마트워치의 활용도 증가에 따라 이를 활용하여 보행 중 스마트폰을 주시하는 문제를 개선한다.
 - 스마트워치의 진동을 활용하여 도보 내비게이션 서비스 제공한다. 
 - 사용자는 직접 스마트워치의 진동 패턴을 본인에게 맞춰 커스터마이징할 수 있다. 
@@ -55,8 +60,8 @@
 
 <br>
 
-## 시연 영상
-### 1. 진동 내비게이션
+## 3. 시연 영상
+### 3.1. 진동 내비게이션
 [![Video Label](https://user-images.githubusercontent.com/50551349/126074311-e9312869-0cac-420b-b8ec-8483c46a782a.png)](https://youtu.be/Hw5rmQwl3-E)
 - 행 중 스마트폰을 사용할 경우의 위험(개발 배경1) 개선했다.
 - GS25 편의점으로 목적지를 설정하면 스마트워치에서 이를 안내하여 목적지에 도착하는 것을 위 영상을 통해 확인할 수 있다. 
@@ -65,14 +70,14 @@
 
 </br>
 
-### 2. 위험 감지
+### 3.2. 위험 감지
 [![Video Label](https://user-images.githubusercontent.com/50551349/126074507-b6488890-9031-4a90-909c-7175a8496cfd.png)](https://youtu.be/anOrdAAKtKU)
 - 주변의 위험을 인지하지 못할 경우의 위험(개발 배경2) 개선했다. 
 - 위 영상과 같이 큰 소리가 감지되면 스마트워치는 진동으로 안내한다.
 
 </br>
 
-### 3. STT
+### 3.3. STT
 [![Video Label](https://user-images.githubusercontent.com/50551349/126074509-bebef2a4-9f0c-40a0-bd1b-10440e24a46e.png)](https://youtu.be/afRJe0G7AcE)
 - 마스크 착용으로 인한 청각장애인들의 불편함(개발 배경3) 개선했다.
 - 위 영상과 같이 스마트워치에서 STT 기능이 동작하는 것을 확인할 수 있다. 
@@ -80,8 +85,8 @@
 
 </br>
 
-## 상세 기능 소개
-### 1. Firebase 활용 회원가입 및 로그인
+## 4. 상세 기능 소개
+### 4.1. Firebase 활용 회원가입 및 로그인
 
 <p align="center"> 
  <img src="https://user-images.githubusercontent.com/50551349/126077361-931dfe28-95eb-4568-855e-363ae9001c48.jpg" width="300"/>
@@ -99,7 +104,7 @@
 
 </br>
 
-### 2. 주변 지도 표시 및 검색
+### 4.2. 주변 지도 표시 및 검색
 
 <p align="center"> 
  <img src="https://user-images.githubusercontent.com/50551349/126077442-c2a65f63-9e67-4a8a-9ec8-d243af0c6e8c.png" width="300"/>
@@ -111,7 +116,7 @@
 
 </br>
 
-### 3. 경로 탐색 및 내비게이션
+### 4.3. 경로 탐색 및 내비게이션
 
 <p align="center"> 
  <img src="https://user-images.githubusercontent.com/50551349/126077519-f9638bc5-3d23-47d6-8a06-ad150d0026c5.png" width="300"/> 
@@ -122,7 +127,7 @@
 
 </br>
 
-### 4. 최근 검색
+### 4.4. 최근 검색
 
 <p align="center"> 
  <img src="https://user-images.githubusercontent.com/50551349/126077625-f60190c1-fbec-4121-9094-2379dd6498e6.png" width="300"/>
@@ -132,7 +137,7 @@
 
 </br>
 
-### 5. 즐겨찾기
+### 4.5. 즐겨찾기
 
 <p align="center"> 
  <img src="https://user-images.githubusercontent.com/50551349/126077717-eed4d3f0-4803-4b66-829d-344ee2103448.png" width="300"/>
@@ -149,7 +154,7 @@
 </br>
 
 
-### 6. 진동 패턴 설정
+### 4.6. 진동 패턴 설정
 
 <p align="center"> 
  <img src="https://user-images.githubusercontent.com/50551349/126077831-d5be6b5d-8154-40e6-a67c-c00b0037b62c.png" width="300"/>
@@ -161,7 +166,7 @@
 </br>
 
 
-### 7. 음성인식 단어 관리
+### 4.7. 음성인식 단어 관리
 
 <p align="center"> 
  <img src="https://user-images.githubusercontent.com/50551349/126077884-aedb2390-054e-45da-8968-22f65bf67625.png" width="300"/>
@@ -172,8 +177,16 @@
 
 </br>
 
-## Advanced Feature
-### 1. SAP 연결 설정
+## 5. 사용 기술 스택
+- Android(Java)
+- Tizen Native API
+- Samsung Accessory Protocol(SAP)
+- T map API
+
+<br>
+
+## 6. Advanced Feature
+### 6.1. SAP 연결 설정
 ```xml
 <uses-permission android:name="com.samsung.accessory.permission.ACCESSORY_FRAMEWORK" />
 <uses-permission android:name="com.samsung.wmanager.APP" />
@@ -209,7 +222,7 @@
 
 <br> 
 
-### 2. Galaxy Watch 연결
+### 6.2. Galaxy Watch 연결
 ```java
 private void connectGalaxyWatch() {
     SAAgentV2.requestAgent(getApplicationContext(), MessageConsumer.class.getName(), agentCallback);
@@ -235,7 +248,7 @@ private void connectGalaxyWatch() {
 
 <br>
 
-### 3. Galaxy Watch 데이터 전송
+### 6.3. Galaxy Watch 데이터 전송
 ```java
 if (messageConsumer != null) {
     messageConsumer.sendData("guide/" + etStraight.getText().toString() + "/straight");
@@ -254,24 +267,16 @@ if (messageConsumer != null) {
 
 <br>
 
-## WBS & Gantt Chart
+## 7. WBS & Gantt Chart
 ![image](https://user-images.githubusercontent.com/50551349/143029101-dcebe1f8-3bfc-4fe4-a1d0-11e277a4120f.png)
 
 ![image](https://user-images.githubusercontent.com/50551349/143029130-f092ff8a-f515-4974-9692-f1af8fc8d69c.png)
 
 <br>
 
-## 추후 보완 내용 (예정)
+## 8. 추후 보완 내용 (예정)
 - STT 기능 통합
 - iOS Version 개발 
 - Node.js 서버 구축
 - 디자인 수정
 - 안정성 개선
-
-</br>
-
-## 사용 기술 스택
-- Android(Java)
-- Tizen Native API
-- Samsung Accessory Protocol(SAP)
-- T map API
