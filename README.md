@@ -37,6 +37,12 @@
 
 </br>
 
+## System Architecture
+
+![image](https://user-images.githubusercontent.com/50551349/143028631-e0ed4f21-1e9f-496c-858a-159a3b2f8cb2.png)
+
+<br>
+
 ## 시연 영상
 ### 1. 진동 내비게이션
 [![Video Label](https://user-images.githubusercontent.com/50551349/126074311-e9312869-0cac-420b-b8ec-8483c46a782a.png)](https://youtu.be/Hw5rmQwl3-E)
@@ -153,6 +159,16 @@
 - 위 그림과 같이 음성인식 단어를 사용자별로 관리할 수 있다.
 
 </br>
+
+## WBS & Gantt Chart
+![image](https://user-images.githubusercontent.com/50551349/143029101-dcebe1f8-3bfc-4fe4-a1d0-11e277a4120f.png)
+
+![image](https://user-images.githubusercontent.com/50551349/143029130-f092ff8a-f515-4974-9692-f1af8fc8d69c.png)
+
+
+## SWOT 분석 
+
+![image](https://user-images.githubusercontent.com/50551349/143029015-14ac1320-658e-4f96-bb48-bb108f1ca9d3.png)
 
 ## 추후 보완 내용 (예정)
 - STT 기능 통합
