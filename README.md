@@ -5,9 +5,12 @@
   - [강지웅](https://github.com/JIW00NG)
   - [김진산](https://github.com/lazybones1)
   - [신영환](https://github.com/sin111011)
-- 관련 수상 : [2021년 한국정보기술학회 대학생논문경진대회 은상](https://ki-it.or.kr/%EA%B3%B5%EC%A7%80%EC%82%AC%ED%95%AD/9152015)
+- 관련 수상 : 
+  - [2021년 한국정보기술학회 대학생논문경진대회 은상](https://ki-it.or.kr/%EA%B3%B5%EC%A7%80%EC%82%AC%ED%95%AD/9152015)
+  - [Software Engineering Day 소프트웨어공학 캡스톤 프로젝트 부문 대상](https://software.jbnu.ac.kr/software/3349/subview.do?enc=Zm5jdDF8QEB8JTJGYmJzJTJGc29mdHdhcmUlMkYxNjUxJTJGMjU1MDIyJTJGYXJ0Y2xWaWV3LmRvJTNG)
 
-  <img src="https://user-images.githubusercontent.com/50551349/126074575-34adb516-cad6-49be-bd19-a9fbb47f7f25.png" width="500">
+<p align="center"> <img src="https://user-images.githubusercontent.com/50551349/126074575-34adb516-cad6-49be-bd19-a9fbb47f7f25.png" width="300">
+ <img src="https://user-images.githubusercontent.com/50551349/147671082-9c5d47a1-761b-45d9-b823-49f688f8954c.png" width="300"/> </p>
 
 <br>
 
